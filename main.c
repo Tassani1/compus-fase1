@@ -1,6 +1,6 @@
 /*
  * File:   main.c
- * Author: ACER
+ * Author: Ari i Marc
  *
  * Created on 9 de febrero de 2026, 12:33
  */
@@ -23,12 +23,21 @@ void main(void) {
     ADCON1 = 0xFF;
         
     TI_Init();
+    Init_Intensity();
+    Init_Leds();
     Init_Serial();
     Init_Teclat();
+
+    int startMotor = 1;
     
     while(1) {
         //MotorTeclat();
-        motorSerial();
+        //motorSerial();
+        INT_motor();
+        if (startMotor) {
+            startMotor = 0;
+            INT_start();
+        }
     }
     
     return;

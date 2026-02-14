@@ -8,6 +8,10 @@
 #ifndef TAD_SPEAKER_H
 #define TAD_SPEAKER_H
 
+void SPE_PlaySound(int frequency, int duration);
+// Post: Reprodueix un so amb l'altaveu a la freqüència i durada especificades.
 
+void SPE_StopSound();
+// Post: Atura qualsevol so que estigui reproduint-se a l'altaveu
 
 #endif

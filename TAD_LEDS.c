@@ -5,7 +5,7 @@
  * Created on 14 de febrero de 2026, 16:12
  */
 
- #include "TAD_LEDS.h"
+#include "TAD_LEDS.h"
 
 #include <xc.h>
 #include "pic18f4321.h"
@@ -16,7 +16,7 @@
 // Alarma   LATD1
 // State OK LATD2
 
-void LEDS_Init (void) {
+void Init_Leds (void) {
     // Activem les sortides de PORT D[2] i PORT D[1] de sortida, i els posem a 0.
     TRISDbits.TRISD1=0;
     TRISDbits.TRISD2=0;

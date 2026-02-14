@@ -9,10 +9,6 @@
 #ifndef TAD_CONTROLLER_H
 #define TAD_CONTROLLER_H
 
-// CONSTANTS
-#define CO_XXXX 0
-
-
 void CO_HallDetected(void);
 // Post: Funció que ha de cridar el TAD de Hall quan detecti un canvi d'estat, i obrirà la porta exterior.
 
@@ -21,6 +17,5 @@ void CO_NewKeyPressed(unsigned char key);
 
 void CO_ExitRequested(void);
 // Post: Funció que ha de cridar el TAD de Exit_
-
 
 #endif

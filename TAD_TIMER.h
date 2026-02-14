@@ -15,11 +15,11 @@
 
 //La RSI
 void RSI_Timer0(void);
-    // IMPORTANT! Funció que ha der ser cridadda des de la RSI, en en cas que TMR0IF==1.
+    // IMPORTANT! FunciÃ³ que ha der ser cridadda des de la RSI, en en cas que TMR0IF==1.
     // La RSI ha de contenir: if (TMR0IF==1) RSI_Timer0();
 
 void TI_Init (void);
-	// Post: Constructor. És precondició global haver cridat aquesta funció quan es cridi qualsevol altra funció del TAD
+	// Post: Constructor. Ã‰s precondiciÃ³ global haver cridat aquesta funciÃ³ quan es cridi qualsevol altra funciÃ³ del TAD
 
 unsigned char TI_NewTimer(unsigned char *TimerHandle) ;
 	// Post: Retorna TI_CERT en cas que s'hagi creat adequadament un nou timer, i TI_FALS en cas contrati.
@@ -27,7 +27,7 @@ unsigned char TI_NewTimer(unsigned char *TimerHandle) ;
 
 void TI_ResetTics (unsigned char TimerHandle);
 	// Pre: Handle ha estat retornat per Ti_NewTimer.
-	// Post: Engega la temporització associada a 'TimerHandle', guardant la referencia temporal en el moment de la crida.
+	// Post: Engega la temporitzaciÃ³ associada a 'TimerHandle', guardant la referencia temporal en el moment de la crida.
 
 unsigned long TI_GetTics (unsigned char TimerHandle);
 	// Pre: Handle ha estat retornat per TI_NewGetTimer.
