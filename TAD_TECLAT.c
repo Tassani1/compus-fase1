@@ -31,7 +31,7 @@ static const char SMS_1[FILES][COLUMNES] = {
     {'1','A','D'},
     {'G','J','M'},
     {'P','T','W'},
-    {'0','0','0'}
+    {'0',' ','0'}
 };
 
 static const char SMS_2[FILES][COLUMNES] = {
@@ -45,7 +45,7 @@ static const char SMS_3[FILES][COLUMNES] = {
     {'1','C','F'},
     {'I','L','O'},
     {'S','V','Y'},
-    {'0','0','0'}
+    {'0',' ','0'}
 };
 
 #define KEY_PRESSED   (!PORTBbits.RB1 || !PORTBbits.RB2 || !PORTBbits.RB3)
