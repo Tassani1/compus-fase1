@@ -8,6 +8,9 @@
 #ifndef TAD_INTENSITY_H
 #define TAD_INTENSITY_H
 
+void Init_Intensity(void);
+// Post: Inicialitza el TAD d'Intensity, deixant-lo preparat per a ser utilitzat.
+
 void INT_start();
 // Post: Encèn el llum d'Intensity i comença a incrementar la intensitat gradualment per dos minuts màxim.
 

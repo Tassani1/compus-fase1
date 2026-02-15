@@ -18,7 +18,7 @@ static unsigned char estat = 0;
 static unsigned char timerGlobal;
 static unsigned char timerSegment;
 
-void INT_init(void) {
+void Init_Intensity(void) {
     TRISDBits.TRISD0 = 0; // Configura RD0 como salida para el LED de intensidad
     LATDbits.LATD0 = 0;
     TI_NewTimer(&timerGlobal);
