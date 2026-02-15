@@ -10,6 +10,7 @@
 #include "TAD_SERIAL.h"
 #include "TAD_TECLAT.h"
 #include "TAD_SPEAKER.h"
+#include "TAD_EXIT_REQUEST.h"
 
 #pragma config OSC = HS //INTIO2
 #pragma config PBADEN = DIG
@@ -29,6 +30,7 @@ void main(void) {
     Init_Serial();
     Init_Teclat();
     Init_Speaker();
+    Init_ExitRequest();
 
     int startMotor = 1;
     
