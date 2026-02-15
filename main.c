@@ -9,6 +9,7 @@
 #include "TAD_TIMER.h"
 #include "TAD_SERIAL.h"
 #include "TAD_TECLAT.h"
+#include "TAD_SPEAKER.h"
 
 #pragma config OSC = HS //INTIO2
 #pragma config PBADEN = DIG
@@ -27,6 +28,7 @@ void main(void) {
     Init_Leds();
     Init_Serial();
     Init_Teclat();
+    Init_Speaker();
 
     int startMotor = 1;
     
