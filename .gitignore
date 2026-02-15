@@ -1,5 +1,12 @@
+# Fitxers de suport que poden ser diferents a cada màquina
+.DS_Store
 .vscode
+
+# Codi generat
 build/
 dist/
 nbproject/
+
+# Fitxers locals
 Archive.zip
+Enunciat P2FA CAT.pdf

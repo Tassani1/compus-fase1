@@ -8,6 +8,9 @@
 #ifndef TAD_SPEAKER_H
 #define TAD_SPEAKER_H
 
+void Init_Speaker();
+//Post: Inicialitza el port RD3 perquè sigui la sortida del speaker
+
 void SPE_PlayAcuteSound();
 // Post: Reprodueix un so agut
 
@@ -20,6 +23,4 @@ void SPE_PlayAlarmSound();
 void SPE_StopSound();
 // Post: Atura qualsevol so que estigui reproduint-se a l'altaveu
 
-void Init_Speaker();
-//Post: Inicialitza el port RD3 perquè sigui la sortida del speaker
 #endif
