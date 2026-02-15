@@ -23,4 +23,7 @@ void SPE_PlayAlarmSound();
 void SPE_StopSound();
 // Post: Atura qualsevol so que estigui reproduint-se a l'altaveu
 
+void SPE_Motor(void);
+// Post: Motor del TAD_SPEAKER, cridat des del main.
+
 #endif
