@@ -10,45 +10,19 @@
 #include <xc.h>
 #include "pic18f4321.h"
 
-/*=====================================================
-  DEFINES GENERALS I CONSTANTS DE TEMPS / FREQÜÈNCIES
-=====================================================*/
+/* Constants en tics sabent el tick és de 2 ms */
+#define ACUTE_DURATION      100     /* so agut curt */
+#define ALARM_DURATION      5000    /* alarma 10 s */
+#define PRESSURE_TOTAL      60000   /* 2 minuts */
+#define PRESSURE_PHASE1     52500   /* 1:45 = 105 s */
 
-/* Duració del tic del mòdul TI en ms (assumit) */
-#define TICK_MS                2
+#define PRESSURE_PERIOD1    500     /* 1 s */
+#define PRESSURE_PERIOD2    250     /* 500 ms */
+#define SOUND_PULSE         50      /* 100 ms */
 
-/* Conversió ms -> tics del TI */
-#define MS_TO_TICS(ms)         ((ms) / TICK_MS)
-
-/* Durades en mil·lisegons */
-#define ACUTE_DURATION_MS      200     /* so agut curt */
-#define ALARM_DURATION_MS      10000   /* alarma 10 s */
-#define PRESSURE_TOTAL_MS      120000  /* 2 minuts */
-#define PRESSURE_PHASE1_MS     105000  /* 1:45 = 105 s */
-#define PRESSURE_PHASE2_MS     15000   /* 15 s finals */
-
-#define PRESSURE_PERIOD1_MS    1000    /* bip cada 1 s */
-#define PRESSURE_PERIOD2_MS    500     /* bip cada 500 ms */
-#define SOUND_PULSE_MS         100     /* durada del bip (so) dins el període */
-
-/* Freqüències (controlades per semiperíode de square wave) en ms */
-#define ACUTE_SEMIPERIOD_MS    2       /* so agut (freq més alta) */
-#define ALARM_SEMIPERIOD_MS    4       /* so d'alarma */
-#define GRAVE_SEMIPERIOD_MS    8       /* so greu per pressió */
-
-/* Mateixes constants en tics del TI */
-#define ACUTE_DURATION_TICS        MS_TO_TICS(ACUTE_DURATION_MS)
-#define ALARM_DURATION_TICS        MS_TO_TICS(ALARM_DURATION_MS)
-#define PRESSURE_TOTAL_TICS        MS_TO_TICS(PRESSURE_TOTAL_MS)
-#define PRESSURE_PHASE1_TICS       MS_TO_TICS(PRESSURE_PHASE1_MS)
-
-#define PRESSURE_PERIOD1_TICS      MS_TO_TICS(PRESSURE_PERIOD1_MS)
-#define PRESSURE_PERIOD2_TICS      MS_TO_TICS(PRESSURE_PERIOD2_MS)
-#define SOUND_PULSE_TICS           MS_TO_TICS(SOUND_PULSE_MS)
-
-#define ACUTE_SEMIPERIOD_TICS      MS_TO_TICS(ACUTE_SEMIPERIOD_MS)
-#define ALARM_SEMIPERIOD_TICS      MS_TO_TICS(ALARM_SEMIPERIOD_MS)
-#define GRAVE_SEMIPERIOD_TICS      MS_TO_TICS(GRAVE_SEMIPERIOD_MS)
+#define ACUTE_SEMIPERIOD    1       /* 2 ms */
+#define ALARM_SEMIPERIOD    2       /* 4 ms */
+#define GRAVE_SEMIPERIOD    4       /* 8 ms */
 
 /*=====================================================
   VARIABLES PRIVADES
@@ -97,7 +71,7 @@ void SPE_Motor(void) {
         ------------------------------------*/
         case 1:
             tDuracio = TI_GetTics(TimerDuracio);
-            if (tDuracio >= ACUTE_DURATION_TICS) {
+            if (tDuracio >= ACUTE_DURATION) {
                 SPE_StopInternal();
                 Estat = 0;
                 break;
@@ -116,7 +90,7 @@ void SPE_Motor(void) {
         ------------------------------------*/
         case 2:
             tDuracio = TI_GetTics(TimerDuracio);
-            if (tDuracio >= ALARM_DURATION_TICS) {
+            if (tDuracio >= ALARM_DURATION) {
                 SPE_StopInternal();
                 Estat = 0;
                 break;
@@ -136,23 +110,23 @@ void SPE_Motor(void) {
         ------------------------------------*/
         case 3:
             tDuracio = TI_GetTics(TimerDuracio);
-            if (tDuracio >= PRESSURE_TOTAL_TICS) {
+            if (tDuracio >= PRESSURE_TOTAL) {
                 SPE_StopInternal();
                 Estat = 0;
                 break;
             }
 
             /* Determinar el període actual segons la fase */
-            if (tDuracio < PRESSURE_PHASE1_TICS) {
-                periodActualTics = PRESSURE_PERIOD1_TICS;   /* 1 s */
+            if (tDuracio < PRESSURE_PHASE1) {
+                periodActualTics = PRESSURE_PERIOD1;   /* 1 s */
             } else {
-                periodActualTics = PRESSURE_PERIOD2_TICS;   /* 500 ms */
+                periodActualTics = PRESSURE_PERIOD2;   /* 500 ms */
             }
 
             tPulse = TI_GetTics(TimerPulse);
 
-            /* Dins del període, durant SOUND_PULSE_TICS fem sonar el to greu */
-            if (tPulse < SOUND_PULSE_TICS) {
+            /* Dins del període, durant SOUND_PULSE fem sonar el to greu */
+            if (tPulse < SOUND_PULSE) {
                 /* Beep actiu: generem square wave */
                 tTone = TI_GetTics(TimerTone);
                 if (tTone >= ToneSemiperiodTics) {
@@ -205,7 +179,7 @@ void SPE_StopSound(void) {
 /* So agut i curt (per portes, confirmacions, etc.) */
 void SPE_PlayAcuteSound(void) {
     SPE_StopSound();                      /* cancel·la so anterior */
-    ToneSemiperiodTics = ACUTE_SEMIPERIOD_TICS;
+    ToneSemiperiodTics = ACUTE_SEMIPERIOD;
 
     TI_ResetTics(TimerDuracio);
     TI_ResetTics(TimerTone);
@@ -216,7 +190,7 @@ void SPE_PlayAcuteSound(void) {
 /* So d'alarma continu durant 10 segons */
 void SPE_PlayAlarmSound(void) {
     SPE_StopSound();
-    ToneSemiperiodTics = ALARM_SEMIPERIOD_TICS;
+    ToneSemiperiodTics = ALARM_SEMIPERIOD;
 
     TI_ResetTics(TimerDuracio);
     TI_ResetTics(TimerTone);
@@ -230,7 +204,7 @@ void SPE_PlayAlarmSound(void) {
 */
 void SPE_PlayPressureSound(void) {
     SPE_StopSound();
-    ToneSemiperiodTics = GRAVE_SEMIPERIOD_TICS;
+    ToneSemiperiodTics = GRAVE_SEMIPERIOD;
 
     TI_ResetTics(TimerDuracio);   /* compta global 0–2 min */
     TI_ResetTics(TimerPulse);     /* compta períodes (1 s / 500 ms) */
