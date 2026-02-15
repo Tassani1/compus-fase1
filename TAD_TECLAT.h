@@ -17,12 +17,12 @@
 #define FILES              4
 #define COLUMNES           3
 
+#define PREMUT() (PORTBbits.RB1 == 1 || PORTBbits.RB2 == 1 || PORTBbits.RB3 == 1)
+
 void Init_Teclat(void);
 void MotorTeclat(void);
 
-char Teclat_GetLastChar(void);
-
-unsigned char Teclat_HasNewChar(void);
+char getSMS_0(char fila, char columna);
 
 void Teclat_Reset(void);
 
