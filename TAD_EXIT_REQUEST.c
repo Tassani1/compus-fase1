@@ -2,7 +2,7 @@
  * File:   TAD_EXIT_REQUEST.h
  * Author: Ari i Marc
  *
- * Created on 14 de febrero de 2026, 16:12
+ * Created on 15 de febrero de 2026, 17:44
  */
 
  #include "TAD_EXIT_REQUEST.h"
