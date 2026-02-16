@@ -34,6 +34,13 @@ unsigned char Serial_GetChar(void){
 void Serial_PutChar(char lletra){
     TXREG = lletra;
 }
+void Serial_PrintaMissatge(const char missatge[]){
+    unsigned char i = 0;
+    while(missatge[i] != '\0'){
+        Serial_PutChar(missatge[i]);
+        i++;
+    }
+}
 
 void motorSerial(void) {
     static char estat = 0;

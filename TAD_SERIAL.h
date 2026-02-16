@@ -15,5 +15,5 @@ unsigned char Serial_GetChar(void);
 void Serial_PutChar(char lletra);
 void motorSerial(void);
 char checkBytes(char var2, char var1);
-
+void Serial_PrintaMissatge(const char missatge[]);
 #endif

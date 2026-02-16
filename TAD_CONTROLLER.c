@@ -33,6 +33,25 @@ static unsigned char PIN_CORRECTE[] = "1511MTV";
 static unsigned char SOLICITUD_ACCEPTADA[] = "Yes";
 static unsigned char SOLICITUD_DENEGADA[] = "No";
 
+const char PORTA_EXTERIOR_OBERTA[] = "> LSBank - open exterior door";
+const char PORTA_EXTERIOR_TANCADA[] = "> LSBank - close exterior door";
+
+const char MISSATGE_ENTRA_PIN[] = "> LSBank - Enter PIN";
+
+const char PERMIS_DENEGAT[] = "> LSBank - Permission Denied";
+
+const char PORTA_INTERIOR_OBERTA[] = "> LSBank - open interior door";
+const char PORTA_INTERIOR_TANCADA[] = "> LSBank - close interior door";
+
+const char EXIT_REQUESTED[] = "> LSBank - Exit Requested";
+
+const char DUES_PORTES_OBERTES[] = "> LSBank - Open both doors";
+const char DUES_PORTES_TANCADES[] = "> LSBank - Close both doors";
+
+const char LLADRE_INTERCEPTAT[] = "> LSBank - Thief Intercepted";
+const char RESET_SISTEMA[] = "> LSBank - Reset System";
+
+
 
 
 void Init_Controller(void){
@@ -59,6 +78,7 @@ void CO_motor(){
     switch(Estat){
         case 0: 
             //TODO: Funció del serial que printi el missatge de bevinguda(No se si sha de posar nomes un cop en tot el programa o cada cop que es reseteja)
+            Serial_PrintaMissatge(const char missatge[])
             LEDS_EncenLed(LED_STATE_OK);
             LEDS_ApagaLed(LED_STATE_ALARM);
             TI_ResetTics(timerController);
