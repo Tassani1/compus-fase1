@@ -31,6 +31,7 @@ void main(void) {
     Init_Teclat();
     Init_Speaker();
     Init_ExitRequest();
+    CO_Motor();
 
     int startMotor = 1;
     
