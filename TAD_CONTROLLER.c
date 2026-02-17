@@ -33,6 +33,7 @@ static unsigned char PIN_CORRECTE[] = "1511MTV";
 static unsigned char SOLICITUD_ACCEPTADA[] = "Yes";
 static unsigned char SOLICITUD_DENEGADA[] = "No";
 
+const char MISSATGE_BENVINGUDA[] = "\r> LSBank - New Day! \r\n\0";
 const char PORTA_EXTERIOR_OBERTA[] = "> LSBank - open exterior door";
 const char PORTA_EXTERIOR_TANCADA[] = "> LSBank - close exterior door";
 
@@ -78,7 +79,7 @@ void CO_motor(){
     switch(Estat){
         case 0: 
             //TODO: Funció del serial que printi el missatge de bevinguda(No se si sha de posar nomes un cop en tot el programa o cada cop que es reseteja)
-            Serial_PrintaMissatge(const char missatge[])
+            Serial_PrintaMissatge(MISSATGE_BENVINGUDA);
             LEDS_EncenLed(LED_STATE_OK);
             LEDS_ApagaLed(LED_STATE_ALARM);
             TI_ResetTics(timerController);
@@ -92,6 +93,7 @@ void CO_motor(){
             //TODO: posar un if per si es detecta el HALL
                 //dintre del if
                 //TODO: Funcio del serial que printi el missatge: > LSBank - Open exterior door
+                Serial_PrintaMissatge(PORTA_EXTERIOR_OBERTA);
                 TI_ResetTics(timerController);
                 Estat = 2;                
                 break;
@@ -99,8 +101,10 @@ void CO_motor(){
         case 2:
             if(TI_GetTics(timerController)>= 1000){
                         //TODO: Funcio del serial que printi el missatge: > LSBank - close/closed exterior door
+                        Serial_PrintaMissatge(PORTA_EXTERIOR_TANCADA);
                         SPE_PlayAcuteSound();
                         //TODO: Funcio del serial que printi el missatge: > LSBank - Enter PIN:
+                        Serial_PrintaMissatge(MISSATGE_ENTRA_PIN);
                         TI_ResetTics(timerController);
                         Estat = 3;
             }
@@ -130,7 +134,9 @@ void CO_motor(){
                     } else{
 
                         //posar > LSBank - Permision Denied
+                        Serial_PrintaMissatge(PERMIS_DENEGAT);
                         //posar > LSBank - Enter PIN
+                        Serial_PrintaMissatge(MISSATGE_ENTRA_PIN);
                     }
                     
 
@@ -139,6 +145,7 @@ void CO_motor(){
                     //Si es correcte
                     INT_stop();
                     //TODO: Posar missatge de: > LSBank - Open Interior door
+                    Serial_PrintaMissatge(PORTA_INTERIOR_OBERTA);
                     TI_ResetTics(timerController);
                     Estat = 5;
 
@@ -155,7 +162,8 @@ void CO_motor(){
             
             if(Alarma){
                 SPE_PlayAlarmSound();
-                //TODO: Serial posasr: > LSBank - Thief Intercepted 
+                //TODO: Serial posasr: > LSBank - Thief Intercepted
+                Serial_PrintaMissatge(LLADRE_INTERCEPTAT);
                 LEDS_EncenLed (LED_STATE_ALARM);
                 LEDS_ApagaLed (LED_STATE_OK);
                 TI_ResetTics(timerController);
@@ -166,8 +174,9 @@ void CO_motor(){
             
             if(TI_GetTics(timerController)<= 5000){
                 //TODO: Posar missatge pel serial de :  > LSBank - Reset System: 
-
+                Serial_PrintaMissatge(RESET_SISTEMA);
                 //TODO: llegir la resposta amb el serial
+
                 //TODO: Posar if comprovant si el Missatge es "Yes"
                     //Si es "Yes"
                     //TI_ResetTics(timerController);
@@ -175,6 +184,7 @@ void CO_motor(){
                     
                 //TODO: else 
                     //TODO: Posar missatge pel serial de :  > LSBank - Reset System:
+                    Serial_PrintaMissatge(RESET_SISTEMA);
 
             } else {
                 TI_ResetTics(timerController);
@@ -186,6 +196,7 @@ void CO_motor(){
         case 5: 
             if(TI_GetTics(timerController)>= 1000){
                 //TODO: Printar > LSBank - Closed interior door
+                Serial_PrintaMissatge(PORTA_INTERIOR_TANCADA);
                 SPE_PlayAcuteSound();
                 Estat = 6; 
             }
@@ -194,9 +205,10 @@ void CO_motor(){
         case 6:
             if(CO_ExitRequested()){
                 //TODO: printar: > LSBank - Exit Requested:
-
+                Serial_PrintaMissatge(EXIT_REQUESTED);
                 //if "Yes"
-                    //TODO: printar: > LSBank - Open bot doors
+                    //TODO: printar: > LSBank - Open both doors
+                    Serial_PrintaMissatge(DUES_PORTES_OBERTES);
                     TI_ResetTics(timerController);
                     Estat = 7;
                 //else ("No")
@@ -210,6 +222,7 @@ void CO_motor(){
         case 7: 
             if(TI_GetTics(timerController)>= 1000){
                 //TODO: printar > LSBank - Close both doors
+                Serial_PrintaMissatge(DUES_PORTES_TANCADES);
                 SPE_PlayAcuteSound();
                 Estat = 0;
             }
