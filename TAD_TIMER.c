@@ -13,7 +13,7 @@
 #define T0CON_CONFIG 0x82
 #define RECARREGA_TMR0 64911        // 2 ms, suposant FOsc a 10MHz.
 
-#define TI_NUMTIMERS 4              // Nombre de timers virtuals gestionats per aquest TAD. Si cal, s'incrementa o es disminueix...
+#define TI_NUMTIMERS 11          // Nombre de timers virtuals gestionats per aquest TAD. Si cal, s'incrementa o es disminueix...
 
 // VARIABLES GLOBALS DEL TAD
 struct Timer {
