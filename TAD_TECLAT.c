@@ -8,6 +8,8 @@
 
 #include "TAD_TECLAT.h"
 #include "TAD_SERIAL.h"
+#include <xc.h>
+#include "TAD_TIMER.h"
 
 static unsigned char timerRebots;
 static unsigned char timerSMS;
@@ -61,7 +63,7 @@ void Init_Teclat(void) {
     TRISBbits.RB3 = 1;
 
     INTCON2bits.RBPU = 0;
-    ADCON1 = 0xFF;
+    ADCON1 = 0x0F;
 
     TI_NewTimer(&timerRebots);
     TI_NewTimer(&timerSMS);
@@ -70,104 +72,134 @@ void Init_Teclat(void) {
     newChar  = 0;
     
     pulsacions = 0;
+    
+    //LED
+    TRISAbits.RA4 = 0;
 }
 
 void MotorTeclat(void) {
     static unsigned char estatTeclat = 0;
-    char fila;
-    unsigned char columna = 0;
-
-    switch (estatTeclat) {
+    static char fila;
+    static unsigned char columna = 0;
+    
+    switch(estatTeclat) {
+        //========================
+        // FILA 0
+        //========================
         case 0:
-            if(!PREMUT()) {
-                LATAbits.LATA0=1;
-                LATAbits.LATA1=0;
-                LATAbits.LATA2=0;
-                LATAbits.LATA3=0;
-                estatTeclat = 1;
-                fila = 0;
-            }
-            else {
-                estatTeclat = 4;
-            }
-            break;
-            
-        case 1:
-            if(!PREMUT()) {
-                LATAbits.LATA0=0;
-                LATAbits.LATA1=1;
-                LATAbits.LATA2=0;
-                LATAbits.LATA3=0;
+            LATAbits.LATA0 = 1;
+            LATAbits.LATA1 = 0;
+            LATAbits.LATA2 = 0;
+            LATAbits.LATA3 = 0;
+            fila = 0;
+            estatTeclat = 1;     // esperar 1 ciclo
+        break;
+
+        case 1:   // lectura fila 0
+            if(PREMUT()){
+                estatTeclat = 8;  // ir a rebote
+            } else {
                 estatTeclat = 2;
-                fila = 1;
             }
-            else {
-                estatTeclat = 4;
-            }
-            break;
-            
+        break;
+
+        //========================
+        // FILA 1
+        //========================
         case 2:
-            if(!PREMUT()) {
-                LATAbits.LATA0=0;
-                LATAbits.LATA1=0;
-                LATAbits.LATA2=1;
-                LATAbits.LATA3=0;
-                estatTeclat = 3;
-                fila = 2;
-            }
-            else {
+            LATAbits.LATA0 = 0;
+            LATAbits.LATA1 = 1;
+            LATAbits.LATA2 = 0;
+            LATAbits.LATA3 = 0;
+            fila = 1;
+            estatTeclat = 3;
+        break;
+
+        case 3:   // lectura fila 1
+            if(PREMUT()){
+                estatTeclat = 8;
+            } else {
                 estatTeclat = 4;
             }
-            break;
-            
-        case 3:
-            if(!PREMUT()) {
-                LATAbits.LATA0=0;
-                LATAbits.LATA1=0;
-                LATAbits.LATA2=0;
-                LATAbits.LATA3=1;
-                estatTeclat = 0;
-                fila = 3;
-            }
-            else {
-                estatTeclat = 4;
-            }
-            break;
-            
+        break;
+
+        //========================
+        // FILA 2
+        //========================
         case 4:
-            TI_ResetTics(timerRebots);
+            LATAbits.LATA0 = 0;
+            LATAbits.LATA1 = 0;
+            LATAbits.LATA2 = 1;
+            LATAbits.LATA3 = 0;
+            fila = 2;
             estatTeclat = 5;
         break;
-        
-        case 5:
-            if(TI_GetTics(timerRebots) >= REBOT_TICS) {
-                if(PREMUT()) {
-                    estatTeclat = 6;
-                }
-                else {
-                    estatTeclat = 0;
+
+        case 5:   // lectura fila 2
+            if(PREMUT()){
+                estatTeclat = 8;
+            } else {
+                estatTeclat = 6;
+            }
+        break;
+
+        //========================
+        // FILA 3
+        //========================
+        case 6:
+            LATAbits.LATA0 = 0;
+            LATAbits.LATA1 = 0;
+            LATAbits.LATA2 = 0;
+            LATAbits.LATA3 = 1;
+            fila = 3;
+            estatTeclat = 7;
+        break;
+
+        case 7:   // lectura fila 3
+            if(PREMUT()){
+                estatTeclat = 8;
+            } else {
+                estatTeclat = 0;   // volver a empezar
+            }
+        break;
+
+        //========================
+        // REBOTE
+        //========================
+        case 8:
+            TI_ResetTics(timerRebots);
+            estatTeclat = 9;
+        break;
+
+        case 9:
+            if(TI_GetTics(timerRebots) >= REBOT_TICS){
+                if(PREMUT()){
+                    estatTeclat = 10;   // tecla válida
+                } else {
+                    estatTeclat = 0;    // falso disparo
                 }
             }
         break;
-        
-        case 6:
-            if(PORTBbits.RB1){  
-                columna=0;  
-            } else if(PORTBbits.RB2){
-                columna=1;  
-            } else if(PORTBbits.RB3){
-                columna=2;  
-            }
-   
+
+        //========================
+        // TECLA CONFIRMADA
+        //========================
+        case 10:
+            // Aquí lees columna
+            if(PORTBbits.RB1) columna = 0;
+            else if(PORTBbits.RB2) columna = 1;
+            else if(PORTBbits.RB3) columna = 2;
+
+            // Aquí ya haces tu lógica SMS
             lastChar = newChar;
             newChar = getSMS_0(fila,columna);
             auxChar = newChar;
             teclaPremuda = 1;
-            
+
             if (newChar == lastChar){
                 pulsacions++;
                 if (pulsacions == 1){
-                        auxChar = SMS_1[fila][columna];
+                    auxChar = SMS_1[fila][columna];
                 } else if (pulsacions == 2){
                     auxChar = SMS_2[fila][columna];
                 } else if (pulsacions == 3){
@@ -176,48 +208,45 @@ void MotorTeclat(void) {
                 } else if (pulsacions == 4){
                     pulsacions = 0;
                 }
-                if (TXSTAbits.TRMT) {
-                    Serial_PutChar(auxChar);
-                }
             }
             else{
                 pulsacions = 0;
-                if (TXSTAbits.TRMT) {
-                    Serial_PutChar(auxChar);
-                }
             }
-            estatTeclat=7;
+
+            TI_ResetTics(timerSMS);
+            estatTeclat = 11;
         break;
-        
-        case 7:
-            if (!PREMUT()) {
+
+        //========================
+        // ESPERAR SOLTAR TECLA
+        //========================
+        case 11:
+            if(!PREMUT()){
                 TI_ResetTics(timerRebots);
-                estatTeclat=8;
+                estatTeclat = 12;
             }
-            break;
-            
-        case 8:
-            if (TI_GetTics(timerRebots) >= REBOT_TICS){
-                if(!PREMUT()) {
-                    TI_ResetTics(timerRebots);
+        break;
+
+        case 12:
+            if(TI_GetTics(timerRebots) >= REBOT_TICS){
+                if(!PREMUT()){
                     estatTeclat = 0;
-                }
-                else {
-                    estatTeclat = 7;
+                } else {
+                    estatTeclat = 11;
                 }
             }
-            break;
+        break;
+    }
+    
+    if(auxChar != 0) {
+        if(TI_GetTics(timerSMS) >= SMS_TIMEOUT_TICS) {
+            Serial_PutChar(auxChar);
+            auxChar = 0;
+            lastChar = 0xFF;
+            pulsacions = 0;
+        }
     }
 }
-
-//char Teclat_GetLastChar(void) {
-//    newChar = 0;
-//    return lastChar;
-//}
-//
-//unsigned char Teclat_HasNewChar(void) {
-//    return newChar;
-//}
 
 char getSMS_0(char fila, char columna) {
     return SMS_0[fila][columna];
