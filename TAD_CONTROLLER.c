@@ -28,6 +28,8 @@ static unsigned char iPIN = 0;
 static unsigned char esCorrecte = 1;
 static unsigned char Static Alarma = 1;
 static unsigned char PIN_CORRECTE = 0; 
+static char hallDetected = 0;
+static char numeLletres = 0;
 
 static unsigned char PIN_CORRECTE[] = "1511MTV";
 static unsigned char SOLICITUD_ACCEPTADA[] = "Yes";
@@ -59,7 +61,9 @@ void Init_Controller(void){
     TI_NewTimer(&timerController);
 }
 
-void CO_HallDetected(void) {}
+void CO_OpenExteriorDoor(void) {
+    hallDetected = 1;
+}
 
 
 
@@ -117,6 +121,7 @@ void CO_motor(){
                 PIN_CORRECTE = 0;
                 SPE_PlayPressureSound();
                 INT_start();
+                //TODO: Posar un if per quan t'introdueixin una tecla i que la vagi guardant.
                 if(iPIN == 7){
                     PIN[8] = '\0';
                     for(unsigned char i = 0; i<8 ; i++){
@@ -178,6 +183,15 @@ void CO_motor(){
                 //TODO: llegir la resposta amb el serial
 
                 //TODO: Posar if comprovant si el Missatge es "Yes"
+                /*if(Serial_CmdReady()){
+                    char *cmd = Serial_GetCmd();
+
+                    if(cmd[0]=='Y' && cmd[1]=='e' && cmd[2]=='s' && cmd[3]=='\0'){
+
+                    // ACCEPTAT
+                 }*/
+
+
                     //Si es "Yes"
                     //TI_ResetTics(timerController);
                     //Anar al estat 0
@@ -206,20 +220,24 @@ void CO_motor(){
             if(CO_ExitRequested()){
                 // printar: > LSBank - Exit Requested:
                 Serial_PrintaMissatge(EXIT_REQUESTED);
-                //if "Yes"
-                    // printar: > LSBank - Open both doors
-                    Serial_PrintaMissatge(DUES_PORTES_OBERTES);
-                    TI_ResetTics(timerController);
-                    Estat = 7;
-                //else ("No")
-                    //Estat = 4;
+                Estat = 7;
 
 
             }
 
             break;
+        case 7:
+            if(numeros <= 3)
+                // printar: > LSBank - Open both doors
+                    Serial_PrintaMissatge(DUES_PORTES_OBERTES);
+                    TI_ResetTics(timerController);
+                    Estat = 8;
+                //else ("No")
+                    //Estat = 4;
+
+            break;
         //espera de 2 segons quan s'ha acceptat la sortida del bank
-        case 7: 
+        case 8: 
             if(TI_GetTics(timerController)>= 1000){
                 // printar > LSBank - Close both doors
                 Serial_PrintaMissatge(DUES_PORTES_TANCADES);
