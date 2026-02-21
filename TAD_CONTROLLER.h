@@ -19,9 +19,10 @@ void controller_init(void);
 void controller_newKeyPressed(unsigned char key);
 // Post: Funció que ha de cridar el TAD de Teclat quan detecti una nova pulsació.
 
-//void controller_exitRequested(void);
+void controller_exitRequested(void);
 // Post: Funció que ha de cridar el TAD de Exit_Request
 
 void controller_motor(void);
 
+void controller_repChar(char lletra);
 #endif

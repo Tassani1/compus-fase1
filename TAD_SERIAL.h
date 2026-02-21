@@ -25,8 +25,10 @@ unsigned char serial_RXAvail(void);
 
 unsigned char serial_TXAvail(void);
 
-void serial_printaMissatge(char *missatge);
+void serial_printaMissatge(const char *missatge);
 
 void serial_motor(void);
+
+void serial_esperaYesONo(void);
 
 #endif

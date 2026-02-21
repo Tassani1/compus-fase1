@@ -7,6 +7,7 @@
 
 
 #include "TAD_SERIAL.h"
+#include "TAD_CONTROLLER.h"
 
 //const char MSG_INICIAL[23] = "\r> LSBank - New Day!\r\n\0";
 //
@@ -14,13 +15,13 @@
 
 #define MAX_MESSAGES 8  // Mida de la cua de missatges
 
-static unsigned char Estat = 0;
 static unsigned char* messageQueue[MAX_MESSAGES];  // Cua circular de missatges
 static unsigned char queueHead = 0;  // Índex de lectura
 static unsigned char queueTail = 0;  // Índex d'escriptura
 static unsigned char queueCount = 0; // Nombre de missatges a la cua
 static unsigned char* message;
 static unsigned char i = 0;
+char YesONo = 0;
 
 
 void serial_init(void){
@@ -58,7 +59,7 @@ unsigned char serial_RXAvail() {
 unsigned char serial_TXAvail(void) {
     return ((PIR1bits.TXIF == 1) ? CERT : FALS);
 }
-void serial_printaMissatge(char *missatge){
+void serial_printaMissatge(const char *missatge){
     // Afegir missatge a la cua si hi ha espai
     if (queueCount < MAX_MESSAGES) {
         messageQueue[queueTail] = missatge;
@@ -67,21 +68,31 @@ void serial_printaMissatge(char *missatge){
     }
     // Si la cua està plena, el missatge es descarta
 }
+void serial_esperaYesONo() {
+        YesONo = 1;
+}
 
 void serial_motor(){
-
+    char variable;
+    static unsigned char Estat = 0;
     switch(Estat){
 
         case 0:
             // Comprovar si hi ha missatges a la cua
-            if (queueCount > 0){
-                // Agafar el següent missatge de la cua
-                message = messageQueue[queueHead];
-                queueHead = (queueHead + 1) % MAX_MESSAGES;
-                queueCount--;
-                i = 0;
-                Estat = 1;
+            if(YesONo){
+                YesONo = 0;
+                Estat = 2;
+            } else{
+                if (queueCount > 0){
+                    // Agafar el següent missatge de la cua
+                    message = messageQueue[queueHead];
+                    queueHead = (queueHead + 1) % MAX_MESSAGES;
+                    queueCount--;
+                    i = 0;
+                    Estat = 1;
+                }
             }
+            
             break;
 
 
@@ -99,8 +110,20 @@ void serial_motor(){
                     }
                     
             }
+            break;
+        case 2: 
+            if (serial_RXAvail()) {
+                variable = serial_getChar();
+                controller_repChar(variable);
+                if (serial_TXAvail()) {
+                    serial_putChar(variable);
+                }
+            }
               
     }
+    
+    
+
 
 }
 //void motorSerial(void) {

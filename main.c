@@ -14,6 +14,7 @@
 #include "TAD_INTENSITY.h"
 #include "TAD_HALL.h"
 #include "TAD_SPEAKER.h"
+#include "TAD_EXIT_REQUEST.h"
 
 #pragma config OSC = HS //INTIO2
 #pragma config PBADEN = DIG
@@ -40,6 +41,7 @@ void main(void) {
     leds_init();
     hall_init();
     controller_init();
+    exitRequest_init();
     
 //    TRISAbits.TRISA4 = 0;
 //    LATAbits.LATA4 = 0;
@@ -50,7 +52,7 @@ void main(void) {
         teclat_motor();
         serial_motor();
         speaker_motor();
-        
+        exitRequest_motor();
         
         //LATDbits.LATD0 = 1;
     }
