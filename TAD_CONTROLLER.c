@@ -39,10 +39,10 @@ const char RESET_SISTEMA[] = "\r> LSBank - Reset System\r\n";
 
 char i = 0;
 
-static unsigned char timerPortaExterior;
+static unsigned char timerController;
 
 void Init_Controller(void){
-    TI_NewTimer(&timerPortaExterior);
+    TI_NewTimer(&timerController);
 }
 
 void motorController(void) {
@@ -54,85 +54,38 @@ void motorController(void) {
             LEDS_ApagaLed(LED_STATE_ALARM);
             Serial_PrintaMissatge(MISSATGE_BENVINGUDA);
             
-            /*if (MISSATGE_BENVINGUDA[i] != '\0') {
-                if (TXIF == 1) {                      
-                    Serial_PutChar(MISSATGE_BENVINGUDA[i]);
-                    i++;
-                }
-            }
-            else {
-                i = 0;
-                estat = 1;
-            }*/
+            
             estat = 1;
             
             break;
             
         case 1:
             if(Hall_Detectat()) {
-                i = 0;
-                estat = 2;
+                 Serial_PrintaMissatge(PORTA_EXTERIOR_OBERTA);
+                TI_ResetTics(timerController);
+                estat = 2; 
             }
      
             break;
             
         case 2:
-            if(PORTA_EXTERIOR_OBERTA[i] != '\0') {
-                if(TXIF) {
-                    Serial_PutChar(PORTA_EXTERIOR_OBERTA[i]);
-                    i++;
-                }
-            } else {
-                i = 0;
-                
-                // Activar speaker
-                LATDbits.LATD3 = 1;   // ejemplo buzzer
-
-                TI_ResetTics(timerPortaExterior);
-                
+            if(TI_GetTics(timerController) >= 1000) {
+                 Serial_PrintaMissatge(PORTA_EXTERIOR_TANCADA);
+                //SPE_PlayAcuteSound();
+                Serial_PrintaMissatge(MISSATGE_ENTRA_PIN);
+                TI_ResetTics(timerController);
                 estat = 3;
-            }
-            
-            break;
-            
-        case 3:
-            if(TI_GetTics(timerPortaExterior) >= 1000) {
-                LATDbits.LATD3 = 0;   // apagar buzzer
 
-                estat = 4;
+                
             }
             
             break;
-            
-        case 4:
-            if(PORTA_EXTERIOR_TANCADA[i] != '\0') {
-                if(TXIF) {
-                    Serial_PutChar(PORTA_EXTERIOR_TANCADA[i]);
-                    i++;
-                }
-            }
-            else {
-                i = 0;
-                estat = 5;
+        case 3: 
+            if(TI_GetTics(timerController) <= 60000){
+                
             }
             
-            break;
+ 
             
-        case 5:
-//            if(!Hall_Detectat()) {
-//                estat = 1;
-//            }
-            if(MISSATGE_ENTRA_PIN[i] != '\0') {
-                if(TXIF) {
-                    Serial_PutChar(MISSATGE_ENTRA_PIN[i]);
-                    i++;
-                }
-            }
-            else {
-                i = 0;
-                estat = 6;
-            }
-            
-            break;
     }
 }
