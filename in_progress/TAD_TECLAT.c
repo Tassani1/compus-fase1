@@ -174,7 +174,7 @@ void MotorTeclat(void) {
         case 9:
             if(TI_GetTics(timerRebots) >= REBOT_TICS){
                 if(PREMUT()){
-                    estatTeclat = 10;   // tecla v·lida
+                    estatTeclat = 10;   // tecla v√°lida
                 } else {
                     estatTeclat = 0;    // falso disparo
                 }
@@ -185,12 +185,12 @@ void MotorTeclat(void) {
         // TECLA CONFIRMADA
         //========================
         case 10:
-            // AquÌ lees columna
+            // Aqu√≠ lees columna
             if(PORTBbits.RB1) columna = 0;
             else if(PORTBbits.RB2) columna = 1;
             else if(PORTBbits.RB3) columna = 2;
 
-            // AquÌ ya haces tu lÛgica SMS
+            // Aqu√≠ ya haces tu l√≥gica SMS
             lastChar = newChar;
             newChar = getSMS_0(fila,columna);
             auxChar = newChar;

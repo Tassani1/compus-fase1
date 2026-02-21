@@ -8,17 +8,16 @@
 #ifndef TAD_INTENSITY_H
 #define TAD_INTENSITY_H
 
-void Init_Intensity(void);
-// Post: Inicialitza el TAD d'Intensity, deixant-lo preparat per a ser utilitzat.
+void INT_init(void);
 
-void INT_start();
-// Post: Enc√®n el llum d'Intensity i comen√ßa a incrementar la intensitat gradualment per dos minuts m√†xim.
+void INT_start(void);
+// Post: EncËn el llum d'Intensity i comenÁa a incrementar la intensitat gradualment per dos minuts m‡xim.
 
-void INT_stop();
-// Pre: El llum d'Intensity est√† encesa.
+void INT_stop(void);
+// Pre: El llum d'Intensity est‡ encesa.
 // Post: Apaga el llum d'Intensity.
 
 void INT_motor(void);
-// Post: Far√† avan√ßar el motor del TAD.
+// Post: Far‡ avanÁar el motor del TAD.
 
 #endif

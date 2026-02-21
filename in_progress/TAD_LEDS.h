@@ -15,11 +15,11 @@ void Init_Leds (void);
 // Post: Configura els pins de sortida per als LEDs i els apaga.
 
 void LEDS_EncenLed (char Led);
-// Pre: El llum del LED especificat (State OK(0) o Alarm(1)) est‡ apagat.
-// Post: EncËn el llum del LED especificat (State OK(0) o Alarm(1)).
+// Pre: El llum del LED especificat (State OK(0) o Alarm(1)) est√† apagat.
+// Post: Enc√®n el llum del LED especificat (State OK(0) o Alarm(1)).
 
 void LEDS_ApagaLed (char Led);
-// Pre: El llum del LED especificat (State OK(0) o Alarm(1)) est‡ encËs.  
+// Pre: El llum del LED especificat (State OK(0) o Alarm(1)) est√† enc√®s.  
 // Post: Apaga el llum del LED especificat (State OK(0) o Alarm(1)).
 
 #endif

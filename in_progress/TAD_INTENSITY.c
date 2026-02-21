@@ -10,16 +10,16 @@
 #include "pic18f4321.h"
 #include "TAD_TIMER.h"
 
-static unsigned long tick_counter = 0;        // Comptador global de ticks (2ms)
-static unsigned long step_counter = 0;        // Comptador per saber quan pujar %
+static unsigned int tick_counter = 0;        // Comptador global de ticks (2ms)
+static unsigned int step_counter = 0;        // Comptador per saber quan pujar %
 static unsigned char intensity_percent = 0;  // 0..100
 static unsigned char pwm_counter = 0;        // 0..99
 static unsigned char estat = 0;
 static unsigned char timerGlobal;
 static unsigned char timerSegment;
 
-void INT_init(void) {
-    TRISDbits.TRISD0 = 0; // Configura RD0 como salida para el LED de intensidad
+void Init_Intensity(void) {
+    TRISDBits.TRISD0 = 0; // Configura RD0 como salida para el LED de intensidad
     LATDbits.LATD0 = 0;
     TI_NewTimer(&timerGlobal);
     TI_NewTimer(&timerSegment);
@@ -30,7 +30,7 @@ void INT_start(void) {
     step_counter = 0;
     pwm_counter = 0;
     intensity_percent = 0;
-    estat = 1; // Comença a incrementar la intensitat
+    estat = 1; // ComenÃ§a a incrementar la intensitat
     TI_ResetTics(timerGlobal);
     TI_ResetTics(timerSegment);
 }
@@ -39,6 +39,7 @@ void INT_stop(void) {
     estat = 0;
     intensity_percent = 0;
     pwm_counter = 0;
+
     LATDbits.LATD0 = 0;   // Apagar LED
 }
 
