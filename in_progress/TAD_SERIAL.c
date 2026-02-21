@@ -14,9 +14,14 @@
 #define CONFIGURACIO_RCSTA 0x90
 #define DIVISOR_BAUDRATE 64
 
+#define MAX_MESSAGES 8  // Mida de la cua de missatges
+
 static unsigned char Estat = 0;
+static unsigned char* messageQueue[MAX_MESSAGES];  // Cua circular de missatges
+static unsigned char queueHead = 0;  // Índex de lectura
+static unsigned char queueTail = 0;  // Índex d'escriptura
+static unsigned char queueCount = 0; // Nombre de missatges a la cua
 static unsigned char* message;
-static unsigned char startWriting = 0;
 static unsigned char i = 0;
 
 void SIO_Init(void) {
@@ -43,9 +48,15 @@ unsigned char SIO_TXAvail(void) {
 void SIO_PutChar (unsigned char Valor) {
     TXREG = Valor;
 }
+
 void SIO_WriteMessage(char *missatge){
-    message = missatge;
-    startWriting = 1;
+    // Afegir missatge a la cua si hi ha espai
+    if (queueCount < MAX_MESSAGES) {
+        messageQueue[queueTail] = missatge;
+        queueTail = (queueTail + 1) % MAX_MESSAGES;
+        queueCount++;
+    }
+    // Si la cua està plena, el missatge es descarta
 }
 
 void Motor_Serial(){
@@ -53,11 +64,14 @@ void Motor_Serial(){
     switch(Estat){
 
         case 0:
-            if (startWriting){
+            // Comprovar si hi ha missatges a la cua
+            if (queueCount > 0){
+                // Agafar el següent missatge de la cua
+                message = messageQueue[queueHead];
+                queueHead = (queueHead + 1) % MAX_MESSAGES;
+                queueCount--;
+                i = 0;
                 Estat = 1;
-            } else {
-                //si demana lo del yes o no caldrà fer lo de casa
-                
             }
             break;
 
@@ -70,9 +84,8 @@ void Motor_Serial(){
                         i++;
                     }
                     else {
-                        //resetejar variables
+                        //resetejar variables i tornar a buscar més missatges
                         Estat = 0;
-                        startWriting = 0;
                         i = 0;
                     }
                     
