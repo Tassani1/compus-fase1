@@ -11,9 +11,15 @@
 //const char MSG_INICIAL[23] = "\r> LSBank - New Day!\r\n\0";
 //
 //char i = 0;
+
+#define MAX_MESSAGES 8  // Mida de la cua de missatges
+
 static unsigned char Estat = 0;
-static char* message;
-static unsigned char startWriting = 0;
+static unsigned char* messageQueue[MAX_MESSAGES];  // Cua circular de missatges
+static unsigned char queueHead = 0;  // Índex de lectura
+static unsigned char queueTail = 0;  // Índex d'escriptura
+static unsigned char queueCount = 0; // Nombre de missatges a la cua
+static unsigned char* message;
 static unsigned char i = 0;
 
 
@@ -53,8 +59,13 @@ unsigned char Serial_TXAvail(void) {
     return ((PIR1bits.TXIF == 1) ? CERT : FALS);
 }
 void Serial_PrintaMissatge(char *missatge){
-    message = missatge;
-    startWriting = 1;
+    // Afegir missatge a la cua si hi ha espai
+    if (queueCount < MAX_MESSAGES) {
+        messageQueue[queueTail] = missatge;
+        queueTail = (queueTail + 1) % MAX_MESSAGES;
+        queueCount++;
+    }
+    // Si la cua està plena, el missatge es descarta
 }
 
 void MotorSerial(){
@@ -62,11 +73,14 @@ void MotorSerial(){
     switch(Estat){
 
         case 0:
-            if (startWriting){
+            // Comprovar si hi ha missatges a la cua
+            if (queueCount > 0){
+                // Agafar el següent missatge de la cua
+                message = messageQueue[queueHead];
+                queueHead = (queueHead + 1) % MAX_MESSAGES;
+                queueCount--;
+                i = 0;
                 Estat = 1;
-            } else {
-                //si demana lo del yes o no caldr� fer lo de casa
-                
             }
             break;
 
@@ -81,7 +95,6 @@ void MotorSerial(){
                     else {
                         //resetejar variables
                         Estat = 0;
-                        startWriting = 0;
                         i = 0;
                     }
                     
