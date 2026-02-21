@@ -11,6 +11,10 @@
 //const char MSG_INICIAL[23] = "\r> LSBank - New Day!\r\n\0";
 //
 //char i = 0;
+static unsigned char Estat = 0;
+static unsigned char* message;
+static unsigned char startWriting = 0;
+static unsigned char i = 0;
 
 void Init_Serial(void){
     TRISCbits.TRISC6 = 1;  
@@ -40,6 +44,51 @@ void Serial_PutChar(char lletra){
     TXREG = lletra;
 }
 
+unsigned char Serial_RXAvail() {
+    return ((PIR1bits.RCIF == 1) ? CERT : FALS);
+}
+
+unsigned char Serial_TXAvail(void) {
+    return ((PIR1bits.TXIF == 1) ? CERT : FALS);
+}
+void Serial_PrintaMissatge(char *missatge){
+    message = missatge;
+    startWriting = 1;
+}
+
+void Motor_Serial(){
+
+    switch(Estat){
+
+        case 0:
+            if (startWriting){
+                Estat = 1;
+            } else {
+                //si demana lo del yes o no caldrà fer lo de casa
+                
+            }
+            break;
+
+
+        case 1:
+        //Mentre la SIO estigui activada enviar 
+            if(Serial_TXAvail()){
+                    if(message[i] != '\0' && message[i] != '\r' && message[i] != '\n'){
+                        Serial_PutChar(message[i]);
+                        i++;
+                    }
+                    else {
+                        //resetejar variables
+                        Estat = 0;
+                        startWriting = 0;
+                        i = 0;
+                    }
+                    
+            }
+              
+    }
+
+}
 //void motorSerial(void) {
 //    static char estat = 0;
 //    //TRISAbits.TRISA3 = 0;
