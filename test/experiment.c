@@ -4,8 +4,8 @@
 
 
 /*
-gcc -Wall -Wextra -o experiment experiment.c
-./experiment
+gcc -Wall -Wextra -o bin/experiment experiment.c
+./bin/experiment
 */
 int main(void) {
     char text[] = "Hols";

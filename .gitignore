@@ -5,7 +5,19 @@
 # Codi generat
 build/
 dist/
+test/bin/
 
 # Fitxers locals
 Archive.zip
 Enunciat P2FA CAT.pdf
+
+# Configuració de l'IDE
+#nbproject/
+
+# Hi ha rutes a MPLAB
+#nbproject/Makefile-genesis.properties
+#nbproject/Makefile-local-default.mk
+#nbproject/private/configurations.xml
+
+# Hi ha rutes a fitxers de projecte
+#nbproject/private/private.xml
