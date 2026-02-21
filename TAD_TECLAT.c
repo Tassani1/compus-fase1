@@ -10,6 +10,7 @@
 #include "TAD_SERIAL.h"
 #include <xc.h>
 #include "TAD_TIMER.h"
+#include "TAD_CONTROLLER.h"
 
 static unsigned char timerRebots;
 static unsigned char timerSMS;
@@ -240,7 +241,8 @@ void MotorTeclat(void) {
     
     if(auxChar != 0) {
         if(TI_GetTics(timerSMS) >= SMS_TIMEOUT_TICS) {
-            Serial_PutChar(auxChar);
+            //Serial_PutChar(auxChar);
+            CO_NewKeyPressed(auxChar);
             auxChar = 0;
             lastChar = 0xFF;
             pulsacions = 0;

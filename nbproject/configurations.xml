@@ -11,6 +11,8 @@
       <itemPath>TAD_LEDS.h</itemPath>
       <itemPath>TAD_SERIAL.h</itemPath>
       <itemPath>TAD_HALL.h</itemPath>
+      <itemPath>TAD_SPEAKER.c</itemPath>
+      <itemPath>TAD_SPEAKER.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"

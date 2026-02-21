@@ -12,6 +12,7 @@
 #include "TAD_TIMER.h"
 #include "TAD_HALL.h"
 #include "TAD_LEDS.h"
+#include "TAD_SPEAKER.h"
 
 static unsigned char PIN_CORRECTE_1[] = "1511MTV";
 static unsigned char PIN_CORRECTE_2[] = "2806AGN";
@@ -37,14 +38,22 @@ const char DUES_PORTES_TANCADES[] = "\r> LSBank - Close both doors\r\n";
 const char LLADRE_INTERCEPTAT[] = "\r> LSBank - Thief Intercepted\r\n";
 const char RESET_SISTEMA[] = "\r> LSBank - Reset System\r\n";
 
-char i = 0;
-
+char intents = 0;
+char caractersPIN = 0;
+unsigned char PIN[7];
 static unsigned char timerController;
 
 void Init_Controller(void){
     TI_NewTimer(&timerController);
 }
-
+void CO_NewKeyPressed(unsigned char key){
+    if(caractersPIN<7){
+        PIN[caractersPIN++] = key;
+        Serial_PutChar(key);
+    }
+    
+    
+}
 void motorController(void) {
     static char estat = 0;
     
@@ -61,7 +70,7 @@ void motorController(void) {
             
         case 1:
             if(Hall_Detectat()) {
-                 Serial_PrintaMissatge(PORTA_EXTERIOR_OBERTA);
+                Serial_PrintaMissatge(PORTA_EXTERIOR_OBERTA);
                 TI_ResetTics(timerController);
                 estat = 2; 
             }
@@ -70,8 +79,8 @@ void motorController(void) {
             
         case 2:
             if(TI_GetTics(timerController) >= 1000) {
-                 Serial_PrintaMissatge(PORTA_EXTERIOR_TANCADA);
-                //SPE_PlayAcuteSound();
+                Serial_PrintaMissatge(PORTA_EXTERIOR_TANCADA);
+                SPE_PlayAcuteSound();
                 Serial_PrintaMissatge(MISSATGE_ENTRA_PIN);
                 TI_ResetTics(timerController);
                 estat = 3;
@@ -81,11 +90,20 @@ void motorController(void) {
             
             break;
         case 3: 
-            if(TI_GetTics(timerController) <= 60000){
-                
+            if(TI_GetTics(timerController) >= 100){
+                SPE_PlayPressureSound();
+                estat = 4;
             }
             
- 
+            break;
             
+ 
+        case 4:
+               if(TI_GetTics(timerController) >= 60000){
+                   if(caractersPIN <8){
+                       
+                   }
+                   
+            }
     }
 }

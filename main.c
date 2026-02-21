@@ -13,6 +13,7 @@
 #include "TAD_LEDS.h"
 #include "TAD_INTENSITY.h"
 #include "TAD_HALL.h"
+#include "TAD_SPEAKER.h"
 
 #pragma config OSC = HS //INTIO2
 #pragma config PBADEN = DIG
@@ -27,7 +28,10 @@ void __interrupt() RSI_High(void){
 	RSI_Timer0();
 }
 
-void main(void) {       
+void main(void) { 
+    TRISDbits.TRISD3 = 0;
+    LATDbits.LATD3 = 0;
+    Init_Speaker();
     TI_Init();
     Init_Serial();
     Init_Teclat();
@@ -44,6 +48,8 @@ void main(void) {
         //INT_motor();
         MotorTeclat();
         MotorSerial();
+        SPE_Motor();
+        
         
         //LATDbits.LATD0 = 1;
     }
