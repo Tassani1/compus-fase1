@@ -12,9 +12,10 @@
 //
 //char i = 0;
 static unsigned char Estat = 0;
-static unsigned char* message;
+static char* message;
 static unsigned char startWriting = 0;
 static unsigned char i = 0;
+
 
 void Init_Serial(void){
     TRISCbits.TRISC6 = 1;  
@@ -56,7 +57,7 @@ void Serial_PrintaMissatge(char *missatge){
     startWriting = 1;
 }
 
-void Motor_Serial(){
+void MotorSerial(){
 
     switch(Estat){
 
@@ -73,7 +74,7 @@ void Motor_Serial(){
         case 1:
         //Mentre la SIO estigui activada enviar 
             if(Serial_TXAvail()){
-                    if(message[i] != '\0' && message[i] != '\r' && message[i] != '\n'){
+                    if(message[i] != '\0'){
                         Serial_PutChar(message[i]);
                         i++;
                     }

@@ -244,6 +244,7 @@ void MotorTeclat(void) {
             auxChar = 0;
             lastChar = 0xFF;
             pulsacions = 0;
+            newChar = 0; 
         }
     }
 }

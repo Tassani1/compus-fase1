@@ -14,5 +14,5 @@ void Init_Hall(void) {
 }
 
 unsigned char Hall_Detectat(void) {
-    return (PORTCbits.RC4 == 1);   // Activo en bajo
+    return (PORTCbits.RC4 == 0);   // Activo en bajo
 }

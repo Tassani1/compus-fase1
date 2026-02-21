@@ -18,11 +18,11 @@ static unsigned char PIN_CORRECTE_2[] = "2806AGN";
 static unsigned char SOLICITUD_ACCEPTADA[] = "Yes";
 static unsigned char SOLICITUD_DENEGADA[] = "No";
 
-const char MISSATGE_BENVINGUDA[] = "\r> LSBank - New Day!\r\n\0";
+const char MISSATGE_BENVINGUDA[] = "\r> LSBank - New Day!\r\n";
 const char PORTA_EXTERIOR_OBERTA[] = "\r> LSBank - Open exterior door\r\n";
 const char PORTA_EXTERIOR_TANCADA[] = "\r> LSBank - Close exterior door\r\n";
 
-const char MISSATGE_ENTRA_PIN[] = "\r> LSBank - Enter PIN: \r";
+const char MISSATGE_ENTRA_PIN[] = "\r> LSBank - Enter PIN: ";
 
 const char PERMIS_DENEGAT[] = "\r> LSBank - Permission Denied\r\n";
 
@@ -52,8 +52,9 @@ void motorController(void) {
         case 0:
             LEDS_EncenLed(LED_STATE_OK);
             LEDS_ApagaLed(LED_STATE_ALARM);
+            Serial_PrintaMissatge(MISSATGE_BENVINGUDA);
             
-            if (MISSATGE_BENVINGUDA[i] != '\0') {
+            /*if (MISSATGE_BENVINGUDA[i] != '\0') {
                 if (TXIF == 1) {                      
                     Serial_PutChar(MISSATGE_BENVINGUDA[i]);
                     i++;
@@ -62,7 +63,8 @@ void motorController(void) {
             else {
                 i = 0;
                 estat = 1;
-            }
+            }*/
+            estat = 1;
             
             break;
             

@@ -22,6 +22,6 @@ unsigned char Serial_RXAvail(void);
 unsigned char Serial_TXAvail(void);
 void Serial_PrintaMissatge(char *missatge);
 
-//void motorSerial(void);
+void MotorSerial(void);
 
 #endif

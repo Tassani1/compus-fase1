@@ -43,6 +43,7 @@ void main(void) {
         motorController();
         //INT_motor();
         MotorTeclat();
+        MotorSerial();
         
         //LATDbits.LATD0 = 1;
     }
