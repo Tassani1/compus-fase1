@@ -15,25 +15,25 @@
 
 //La RSI
 void RSI_Timer0(void);
-    // IMPORTANT! Funció que ha der ser cridadda des de la RSI, en en cas que TMR0IF==1.
+    // IMPORTANT! Funciï¿½ que ha der ser cridadda des de la RSI, en en cas que TMR0IF==1.
     // La RSI ha de contenir: if (TMR0IF==1) RSI_Timer0();
 
-void TI_Init (void);
-	// Post: Constructor. És precondició global haver cridat aquesta funció quan es cridi qualsevol altra funció del TAD
+void timer_init (void);
+	// Post: Constructor. ï¿½s precondiciï¿½ global haver cridat aquesta funciï¿½ quan es cridi qualsevol altra funciï¿½ del TAD
 
-unsigned char TI_NewTimer(unsigned char *TimerHandle) ;
+unsigned char timer_newTimer(unsigned char *TimerHandle) ;
 	// Post: Retorna TI_CERT en cas que s'hagi creat adequadament un nou timer, i TI_FALS en cas contrati.
     // Posa a *TimerHandle l'identificador de timer assignat, necessari per usar les funcions TI_GetTics i TI_ResetTics.
 
-void TI_ResetTics (unsigned char TimerHandle);
+void timer_resetTics (unsigned char TimerHandle);
 	// Pre: Handle ha estat retornat per Ti_NewTimer.
-	// Post: Engega la temporització associada a 'TimerHandle', guardant la referencia temporal en el moment de la crida.
+	// Post: Engega la temporitzaciï¿½ associada a 'TimerHandle', guardant la referencia temporal en el moment de la crida.
 
-unsigned long TI_GetTics (unsigned char TimerHandle);
-	// Pre: Handle ha estat retornat per TI_NewGetTimer.
-	// Post: Retorna els tics transcorreguts des de la crida a TI_ResetTics per al mateix TimerHandle.
+unsigned long timer_getTics (unsigned char TimerHandle);
+	// Pre: Handle ha estat retornat per timer_newTimer.
+	// Post: Retorna els tics transcorreguts des de la crida a timer_resetTics per al mateix TimerHandle.
 
-void TI_End (void);
+void timer_end (void);
 	// Post: Destructor del TAD
 
 #endif

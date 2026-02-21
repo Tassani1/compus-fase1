@@ -23,7 +23,7 @@ static unsigned char* message;
 static unsigned char i = 0;
 
 
-void Init_Serial(void){
+void serial_init(void){
     TRISCbits.TRISC6 = 1;  
     TRISCbits.TRISC7 = 1; 
     
@@ -43,22 +43,22 @@ void Init_Serial(void){
     RCSTAbits.CREN = 1;     
 }
 
-unsigned char Serial_GetChar(void){
+unsigned char serial_getChar(void){
     return RCREG;
 }
 
-void Serial_PutChar(char lletra){
+void serial_putChar(char lletra){
     TXREG = lletra;
 }
 
-unsigned char Serial_RXAvail() {
+unsigned char serial_RXAvail() {
     return ((PIR1bits.RCIF == 1) ? CERT : FALS);
 }
 
-unsigned char Serial_TXAvail(void) {
+unsigned char serial_TXAvail(void) {
     return ((PIR1bits.TXIF == 1) ? CERT : FALS);
 }
-void Serial_PrintaMissatge(char *missatge){
+void serial_printaMissatge(char *missatge){
     // Afegir missatge a la cua si hi ha espai
     if (queueCount < MAX_MESSAGES) {
         messageQueue[queueTail] = missatge;
@@ -68,7 +68,7 @@ void Serial_PrintaMissatge(char *missatge){
     // Si la cua està plena, el missatge es descarta
 }
 
-void MotorSerial(){
+void serial_motor(){
 
     switch(Estat){
 
@@ -87,9 +87,9 @@ void MotorSerial(){
 
         case 1:
         //Mentre la SIO estigui activada enviar 
-            if(Serial_TXAvail()){
+            if(serial_TXAvail()){
                     if(message[i] != '\0'){
-                        Serial_PutChar(message[i]);
+                        serial_putChar(message[i]);
                         i++;
                     }
                     else {
@@ -112,7 +112,7 @@ void MotorSerial(){
 //            LATAbits.LATA3 = 0;
 //            if (MSG_INICIAL[i] != '\0') {
 //                if (TXSTAbits.TRMT) {
-//                    Serial_PutChar(MSG_INICIAL[i]);
+//                    serial_putChar(MSG_INICIAL[i]);
 //                    i++;
 //                }
 //            }

@@ -9,7 +9,7 @@
 #include "pic18f4321.h"
 #include "TAD_TIMER.h"
 
-// Definicions, per interrupció cada 2ms.
+// Definicions, per interrupciï¿½ cada 2ms.
 #define T0CON_CONFIG 0x82
 #define RECARREGA_TMR0 64911        // 2 ms, suposant FOsc a 10MHz.
 
@@ -24,13 +24,13 @@ struct Timer {
 static volatile unsigned long Tics=0;
 
 void RSI_Timer0 () {
-    // Pre: IMPORTANT! Funció que ha der ser cridada des de la RSI, en en cas que TMR0IF==1.
+    // Pre: IMPORTANT! Funciï¿½ que ha der ser cridada des de la RSI, en en cas que TMR0IF==1.
     TMR0=RECARREGA_TMR0;
     TMR0IF=0;
     Tics++;    
 }
 
-void TI_Init () {
+void timer_init () {
 	for (unsigned char counter=0; counter<TI_NUMTIMERS; counter++) {
 		Timers[counter].Busy=TI_FALS;
 	}
@@ -38,10 +38,10 @@ void TI_Init () {
     TMR0=RECARREGA_TMR0;
 	INTCONbits.TMR0IF = 0;
 	INTCONbits.TMR0IE = 1;
-    // Caldrà que des del main o des d'on sigui s'activin les interrupcions globals!
+    // Caldrï¿½ que des del main o des d'on sigui s'activin les interrupcions globals!
 }
 
-unsigned char TI_NewTimer(unsigned char *TimerHandle) {
+unsigned char timer_newTimer(unsigned char *TimerHandle) {
 	unsigned char Comptador=0;
 	while (Timers[Comptador].Busy==TI_CERT) {
 		if (++Comptador == TI_NUMTIMERS) return (TI_FALS);
@@ -51,12 +51,12 @@ unsigned char TI_NewTimer(unsigned char *TimerHandle) {
     return (TI_CERT);
 }
 
-void TI_ResetTics (unsigned char TimerHandle) {
+void timer_resetTics (unsigned char TimerHandle) {
 	di(); Timers[TimerHandle].TicsInicials=Tics; ei();
 }
 
 
-unsigned long TI_GetTics (unsigned char TimerHandle) {
+unsigned long timer_getTics (unsigned char TimerHandle) {
     di(); unsigned long CopiaTicsActual=Tics; ei();
 	return (CopiaTicsActual-(Timers[TimerHandle].TicsInicials));
 }

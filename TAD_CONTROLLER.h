@@ -1,6 +1,6 @@
 /*
  * File:   TAD_COTROLLER.h
- * Author: ACER
+ * Author: Ari i Marc
  *
  * Created on 13 de febrero de 2026, 17:17
  */
@@ -11,17 +11,17 @@
 
 #include <xc.h>
 
-void Init_Controller(void);
+void controller_init(void);
 
 //void CO_HallDetected(void);
-// Post: FunciÛ que ha de cridar el TAD de Hall quan detecti un canvi d'estat, i obrir‡ la porta exterior.
+// Post: Funci√≥ que ha de cridar el TAD de Hall quan detecti un canvi d'estat, i obrir√† la porta exterior.
 
-void CO_NewKeyPressed(unsigned char key);
-// Post: FunciÛ que ha de cridar el TAD de Teclat quan detecti una nova pulsaciÛ.
+void controller_newKeyPressed(unsigned char key);
+// Post: Funci√≥ que ha de cridar el TAD de Teclat quan detecti una nova pulsaci√≥.
 
-//void CO_ExitRequested(void);
-// Post: FunciÛ que ha de cridar el TAD de Exit_Request
+//void controller_exitRequested(void);
+// Post: Funci√≥ que ha de cridar el TAD de Exit_Request
 
-void motorController(void);
+void controller_motor(void);
 
 #endif

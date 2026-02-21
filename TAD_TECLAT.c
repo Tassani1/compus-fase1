@@ -5,7 +5,6 @@
  * Created on 9 de febrero de 2026, 12:34
  */
 
-
 #include "TAD_TECLAT.h"
 #include "TAD_SERIAL.h"
 #include <xc.h>
@@ -50,7 +49,7 @@ static const char SMS_3[FILES][COLUMNES] = {
     {'*','0','#'}
 };
 
-void Init_Teclat(void) {
+void teclat_init(void) {
 
     /* Files: Sortides */
     TRISAbits.RA0 = 0;
@@ -66,8 +65,8 @@ void Init_Teclat(void) {
     INTCON2bits.RBPU = 0;
     ADCON1 = 0x0F;
 
-    TI_NewTimer(&timerRebots);
-    TI_NewTimer(&timerSMS);
+    timer_newTimer(&timerRebots);
+    timer_newTimer(&timerSMS);
 
     lastChar = 0;
     newChar  = 0;
@@ -78,7 +77,7 @@ void Init_Teclat(void) {
     TRISAbits.RA4 = 0;
 }
 
-void MotorTeclat(void) {
+void teclat_motor(void) {
     static unsigned char estatTeclat = 0;
     static char fila;
     static unsigned char columna = 0;
@@ -168,14 +167,14 @@ void MotorTeclat(void) {
         // REBOTE
         //========================
         case 8:
-            TI_ResetTics(timerRebots);
+            timer_resetTics(timerRebots);
             estatTeclat = 9;
         break;
 
         case 9:
-            if(TI_GetTics(timerRebots) >= REBOT_TICS){
+            if(timer_getTics(timerRebots) >= REBOT_TICS){
                 if(PREMUT()){
-                    estatTeclat = 10;   // tecla válida
+                    estatTeclat = 10;   // tecla vï¿½lida
                 } else {
                     estatTeclat = 0;    // falso disparo
                 }
@@ -186,12 +185,12 @@ void MotorTeclat(void) {
         // TECLA CONFIRMADA
         //========================
         case 10:
-            // Aquí lees columna
+            // Aquï¿½ lees columna
             if(PORTBbits.RB1) columna = 0;
             else if(PORTBbits.RB2) columna = 1;
             else if(PORTBbits.RB3) columna = 2;
 
-            // Aquí ya haces tu lógica SMS
+            // Aquï¿½ ya haces tu lï¿½gica SMS
             lastChar = newChar;
             newChar = getSMS_0(fila,columna);
             auxChar = newChar;
@@ -214,7 +213,7 @@ void MotorTeclat(void) {
                 pulsacions = 0;
             }
 
-            TI_ResetTics(timerSMS);
+            timer_resetTics(timerSMS);
             estatTeclat = 11;
         break;
 
@@ -223,13 +222,13 @@ void MotorTeclat(void) {
         //========================
         case 11:
             if(!PREMUT()){
-                TI_ResetTics(timerRebots);
+                timer_resetTics(timerRebots);
                 estatTeclat = 12;
             }
         break;
 
         case 12:
-            if(TI_GetTics(timerRebots) >= REBOT_TICS){
+            if(timer_getTics(timerRebots) >= REBOT_TICS){
                 if(!PREMUT()){
                     estatTeclat = 0;
                 } else {
@@ -240,9 +239,9 @@ void MotorTeclat(void) {
     }
     
     if(auxChar != 0) {
-        if(TI_GetTics(timerSMS) >= SMS_TIMEOUT_TICS) {
-            //Serial_PutChar(auxChar);
-            CO_NewKeyPressed(auxChar);
+        if(timer_getTics(timerSMS) >= SMS_TIMEOUT_TICS) {
+            //serial_putChar(auxChar);
+            controller_newKeyPressed(auxChar);
             auxChar = 0;
             lastChar = 0xFF;
             pulsacions = 0;
@@ -255,7 +254,7 @@ char getSMS_0(char fila, char columna) {
     return SMS_0[fila][columna];
 }
 
-void Teclat_Reset(void) {
+void teclat_reset(void) {
     lastChar = 0;
     newChar = 0;
     pulsacions = 0;

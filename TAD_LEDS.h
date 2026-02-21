@@ -11,15 +11,15 @@
 #define LED_STATE_OK 0
 #define LED_STATE_ALARM 1
 
-void Init_Leds (void);
+void leds_init (void);
 // Post: Configura els pins de sortida per als LEDs i els apaga.
 
-void LEDS_EncenLed (char Led);
-// Pre: El llum del LED especificat (State OK(0) o Alarm(1)) està apagat.
-// Post: Encèn el llum del LED especificat (State OK(0) o Alarm(1)).
+void leds_encenLed (char Led);
+// Pre: El llum del LED especificat (State OK(0) o Alarm(1)) estï¿½ apagat.
+// Post: Encï¿½n el llum del LED especificat (State OK(0) o Alarm(1)).
 
-void LEDS_ApagaLed (char Led);
-// Pre: El llum del LED especificat (State OK(0) o Alarm(1)) està encès.  
+void leds_apagaLed (char Led);
+// Pre: El llum del LED especificat (State OK(0) o Alarm(1)) estï¿½ encï¿½s.  
 // Post: Apaga el llum del LED especificat (State OK(0) o Alarm(1)).
 
 #endif

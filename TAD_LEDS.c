@@ -15,7 +15,7 @@
 // Alarma   LATD1
 // State OK LATD2
 
-void Init_Leds (void) {
+void leds_init (void) {
     // Activem les sortides de PORT D[2] i PORT D[1] de sortida, i els posem a 0.
     TRISDbits.TRISD1=0;
     TRISDbits.TRISD2=0;
@@ -23,7 +23,7 @@ void Init_Leds (void) {
     LATDbits.LATD2=LED_APAGAT;
 }
 
-void LEDS_EncenLed (char Led) {
+void leds_encenLed (char Led) {
     if (Led==LED_STATE_OK) {
         LATDbits.LATD2=LED_ENCES;
     } else if (Led==LED_STATE_ALARM) {
@@ -31,7 +31,7 @@ void LEDS_EncenLed (char Led) {
     }
 }
 
-void LEDS_ApagaLed (char Led) {
+void leds_apagaLed (char Led) {
     if (Led==LED_STATE_OK) {
         LATDbits.LATD2=LED_APAGAT;
     } else if (Led==LED_STATE_ALARM) {

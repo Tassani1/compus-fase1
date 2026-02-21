@@ -15,13 +15,18 @@
 
 
 
-void Init_Serial(void);
-unsigned char Serial_GetChar(void);
-void Serial_PutChar(char lletra);
-unsigned char Serial_RXAvail(void);
-unsigned char Serial_TXAvail(void);
-void Serial_PrintaMissatge(char *missatge);
+void serial_init(void);
 
-void MotorSerial(void);
+unsigned char serial_getChar(void);
+
+void serial_putChar(char lletra);
+
+unsigned char serial_RXAvail(void);
+
+unsigned char serial_TXAvail(void);
+
+void serial_printaMissatge(char *missatge);
+
+void serial_motor(void);
 
 #endif

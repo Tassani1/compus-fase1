@@ -1,6 +1,6 @@
 /*
  * File:   TAD_CONTROLLER.c
- * Author: ACER
+ * Author: Ari i Marc
  *
  * Created on 13 de febrero de 2026, 17:17
  */
@@ -43,25 +43,25 @@ char caractersPIN = 0;
 unsigned char PIN[7];
 static unsigned char timerController;
 
-void Init_Controller(void){
-    TI_NewTimer(&timerController);
+void controller_init(void){
+    timer_newTimer(&timerController);
 }
-void CO_NewKeyPressed(unsigned char key){
+void controller_newKeyPressed(unsigned char key){
     if(caractersPIN<7){
         PIN[caractersPIN++] = key;
-        Serial_PutChar(key);
+        serial_putChar(key);
     }
     
     
 }
-void motorController(void) {
+void controller_motor(void) {
     static char estat = 0;
     
     switch (estat) {
         case 0:
-            LEDS_EncenLed(LED_STATE_OK);
-            LEDS_ApagaLed(LED_STATE_ALARM);
-            Serial_PrintaMissatge(MISSATGE_BENVINGUDA);
+            leds_encenLed(LED_STATE_OK);
+            leds_apagaLed(LED_STATE_ALARM);
+            serial_printaMissatge(MISSATGE_BENVINGUDA);
             
             
             estat = 1;
@@ -69,20 +69,20 @@ void motorController(void) {
             break;
             
         case 1:
-            if(Hall_Detectat()) {
-                Serial_PrintaMissatge(PORTA_EXTERIOR_OBERTA);
-                TI_ResetTics(timerController);
+            if(hall_detectat()) {
+                serial_printaMissatge(PORTA_EXTERIOR_OBERTA);
+                timer_resetTics(timerController);
                 estat = 2; 
             }
      
             break;
             
         case 2:
-            if(TI_GetTics(timerController) >= 1000) {
-                Serial_PrintaMissatge(PORTA_EXTERIOR_TANCADA);
-                SPE_PlayAcuteSound();
-                Serial_PrintaMissatge(MISSATGE_ENTRA_PIN);
-                TI_ResetTics(timerController);
+            if(timer_getTics(timerController) >= 1000) {
+                serial_printaMissatge(PORTA_EXTERIOR_TANCADA);
+                speaker_playAcuteSound();
+                serial_printaMissatge(MISSATGE_ENTRA_PIN);
+                timer_resetTics(timerController);
                 estat = 3;
 
                 
@@ -90,8 +90,8 @@ void motorController(void) {
             
             break;
         case 3: 
-            if(TI_GetTics(timerController) >= 100){
-                SPE_PlayPressureSound();
+            if(timer_getTics(timerController) >= 100){
+                speaker_playPressureSound();
                 estat = 4;
             }
             
@@ -99,7 +99,7 @@ void motorController(void) {
             
  
         case 4:
-               if(TI_GetTics(timerController) >= 60000){
+               if(timer_getTics(timerController) >= 60000){
                    if(caractersPIN <8){
                        
                    }

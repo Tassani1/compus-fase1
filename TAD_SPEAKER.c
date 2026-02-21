@@ -45,13 +45,13 @@ static unsigned int ToneSemiperiodTics = 0;   /* semiperíode en tics TI */
 
 static void SPE_StopInternal(void) {
     LATDbits.LATD3 = 0;
-    TI_ResetTics(TimerDuracio);
-    TI_ResetTics(TimerPulse);
-    TI_ResetTics(TimerTone);
+    timer_resetTics(TimerDuracio);
+    timer_resetTics(TimerPulse);
+    timer_resetTics(TimerTone);
 }
 
 /* Motor privat, cridat des del scheduler cooperatiu */
-void SPE_Motor(void) {
+void speaker_motor(void) {
     unsigned int tDuracio;
     unsigned int tPulse;
     unsigned int tTone;
@@ -70,7 +70,7 @@ void SPE_Motor(void) {
           Estat 1: So agut curt
         ------------------------------------*/
         case 1:
-            tDuracio = TI_GetTics(TimerDuracio);
+            tDuracio = timer_getTics(TimerDuracio);
             if (tDuracio >= ACUTE_DURATION) {
                 SPE_StopInternal();
                 Estat = 0;
@@ -78,10 +78,10 @@ void SPE_Motor(void) {
             }
 
             /* Generació del to: square wave */
-            tTone = TI_GetTics(TimerTone);
+            tTone = timer_getTics(TimerTone);
             if (tTone >= ToneSemiperiodTics) {
                 LATDbits.LATD3 ^= 1;          /* toggle pin */
-                TI_ResetTics(TimerTone);
+                timer_resetTics(TimerTone);
             }
             break;
 
@@ -89,17 +89,17 @@ void SPE_Motor(void) {
           Estat 2: So d'alarma continu (10 s)
         ------------------------------------*/
         case 2:
-            tDuracio = TI_GetTics(TimerDuracio);
+            tDuracio = timer_getTics(TimerDuracio);
             if (tDuracio >= ALARM_DURATION) {
                 SPE_StopInternal();
                 Estat = 0;
                 break;
             }
 
-            tTone = TI_GetTics(TimerTone);
+            tTone = timer_getTics(TimerTone);
             if (tTone >= ToneSemiperiodTics) {
                 LATDbits.LATD3 ^= 1;
-                TI_ResetTics(TimerTone);
+                timer_resetTics(TimerTone);
             }
             break;
 
@@ -109,7 +109,7 @@ void SPE_Motor(void) {
           1:45–2:00 -> mateix bip cada 500 ms
         ------------------------------------*/
         case 3:
-            tDuracio = TI_GetTics(TimerDuracio);
+            tDuracio = timer_getTics(TimerDuracio);
             if (tDuracio >= PRESSURE_TOTAL) {
                 SPE_StopInternal();
                 Estat = 0;
@@ -123,15 +123,15 @@ void SPE_Motor(void) {
                 periodActualTics = PRESSURE_PERIOD2;   /* 500 ms */
             }
 
-            tPulse = TI_GetTics(TimerPulse);
+            tPulse = timer_getTics(TimerPulse);
 
             /* Dins del període, durant SOUND_PULSE fem sonar el to greu */
             if (tPulse < SOUND_PULSE) {
                 /* Beep actiu: generem square wave */
-                tTone = TI_GetTics(TimerTone);
+                tTone = timer_getTics(TimerTone);
                 if (tTone >= ToneSemiperiodTics) {
                     LATDbits.LATD3 ^= 1;
-                    TI_ResetTics(TimerTone);
+                    timer_resetTics(TimerTone);
                 }
             } else {
                 /* Fora del pulse, assegurem el pin a 0 (silenci) */
@@ -140,8 +140,8 @@ void SPE_Motor(void) {
 
             /* Si ja hem superat el període, recomencem el següent bip */
             if (tPulse >= periodActualTics) {
-                TI_ResetTics(TimerPulse);
-                TI_ResetTics(TimerTone);
+                timer_resetTics(TimerPulse);
+                timer_resetTics(TimerTone);
                 LATDbits.LATD3 = 0;
             }
             break;
@@ -158,42 +158,42 @@ void SPE_Motor(void) {
   FUNCIONS PÚBLIQUES
 =====================================================*/
 
-void Init_Speaker(void) {
+void speaker_init(void) {
     TRISDbits.TRISD3 = 0;    /* RD3 com a sortida */
     LATDbits.LATD3 = 0;
 
     /* Inicialitzar timers del TI */
-    TI_NewTimer(&TimerDuracio);
-    TI_NewTimer(&TimerPulse);
-    TI_NewTimer(&TimerTone);
+    timer_newTimer(&TimerDuracio);
+    timer_newTimer(&TimerPulse);
+    timer_newTimer(&TimerTone);
 
     Estat = 0;
     SPE_StopInternal();
 }
 
-void SPE_StopSound(void) {
+void speaker_stopSound(void) {
     SPE_StopInternal();
     Estat = 0;
 }
 
 /* So agut i curt (per portes, confirmacions, etc.) */
-void SPE_PlayAcuteSound(void) {
-    SPE_StopSound();                      /* cancel·la so anterior */
+void speaker_playAcuteSound(void) {
+    speaker_stopSound();                      /* cancel·la so anterior */
     ToneSemiperiodTics = ACUTE_SEMIPERIOD;
 
-    TI_ResetTics(TimerDuracio);
-    TI_ResetTics(TimerTone);
+    timer_resetTics(TimerDuracio);
+    timer_resetTics(TimerTone);
 
     Estat = 1;
 }
 
 /* So d'alarma continu durant 10 segons */
-void SPE_PlayAlarmSound(void) {
-    SPE_StopSound();
+void speaker_playAlarmSound(void) {
+    speaker_stopSound();
     ToneSemiperiodTics = ALARM_SEMIPERIOD;
 
-    TI_ResetTics(TimerDuracio);
-    TI_ResetTics(TimerTone);
+    timer_resetTics(TimerDuracio);
+    timer_resetTics(TimerTone);
 
     Estat = 2;
 }
@@ -202,13 +202,13 @@ void SPE_PlayAlarmSound(void) {
    - 0–1:45  -> bip greu cada 1 s
    - 1:45–2:00 -> bip greu cada 500 ms
 */
-void SPE_PlayPressureSound(void) {
-    SPE_StopSound();
+void speaker_playPressureSound(void) {
+    speaker_stopSound();
     ToneSemiperiodTics = GRAVE_SEMIPERIOD;
 
-    TI_ResetTics(TimerDuracio);   /* compta global 0–2 min */
-    TI_ResetTics(TimerPulse);     /* compta períodes (1 s / 500 ms) */
-    TI_ResetTics(TimerTone);      /* square wave dins del bip */
+    timer_resetTics(TimerDuracio);   /* compta global 0–2 min */
+    timer_resetTics(TimerPulse);     /* compta períodes (1 s / 500 ms) */
+    timer_resetTics(TimerTone);      /* square wave dins del bip */
 
     Estat = 3;
 }

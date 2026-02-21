@@ -1,6 +1,6 @@
 /*
  * File:   main.c
- * Author: ACER
+ * Author: Ari i Marc
  *
  * Created on 9 de febrero de 2026, 12:33
  */
@@ -31,24 +31,25 @@ void __interrupt() RSI_High(void){
 void main(void) { 
     TRISDbits.TRISD3 = 0;
     LATDbits.LATD3 = 0;
-    Init_Speaker();
-    TI_Init();
-    Init_Serial();
-    Init_Teclat();
-    INT_init();
-    Init_Leds();
-    Init_Hall();
-    Init_Controller();
+
+    speaker_init();
+    timer_init();
+    serial_init();
+    teclat_init();
+    intensity_init();
+    leds_init();
+    hall_init();
+    controller_init();
     
 //    TRISAbits.TRISA4 = 0;
 //    LATAbits.LATA4 = 0;
     
     while(1) {
-        motorController();
-        //INT_motor();
-        MotorTeclat();
-        MotorSerial();
-        SPE_Motor();
+        controller_motor();
+        //intensity_motor();
+        teclat_motor();
+        serial_motor();
+        speaker_motor();
         
         
         //LATDbits.LATD0 = 1;

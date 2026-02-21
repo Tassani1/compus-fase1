@@ -16,11 +16,12 @@
 
 #define PREMUT() (PORTBbits.RB1 == 1 || PORTBbits.RB2 == 1 || PORTBbits.RB3 == 1)
 
-void Init_Teclat(void);
-void MotorTeclat(void);
+void teclat_init(void);
+
+void teclat_motor(void);
 
 char getSMS_0(char fila, char columna);
 
-void Teclat_Reset(void);
+void teclat_reset(void);
 
 #endif
