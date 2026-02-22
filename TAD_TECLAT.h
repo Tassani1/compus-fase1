@@ -9,7 +9,7 @@
 #ifndef TAD_TECLAT_H
 #define TAD_TECLAT_H
 
-#define SMS_TIMEOUT_TICS   500     // 1 segon / 2 ms = 500 tics
+#define SMS_TIMEOUT_TICS   80      // 160 ms: resposta més àgil en canvi/petició de tecla
 #define REBOT_TICS         8       // 16 ms
 #define FILES              4
 #define COLUMNES           3
