@@ -193,6 +193,14 @@ void teclat_motor(void) {
             // Aqu� ya haces tu l�gica SMS
             lastChar = newChar;
             newChar = getSMS_0(fila,columna);
+
+            // Si canvia de tecla, confirmem immediatament la pendent
+            // (comportament SMS clàssic: no cal esperar 1 segon).
+            if((auxChar != 0) && (newChar != lastChar)){
+                controller_newKeyPressed(auxChar);
+                pulsacions = 0;
+            }
+
             auxChar = newChar;
             teclaPremuda = 1;
 
