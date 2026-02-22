@@ -88,7 +88,8 @@ void controller_motor(void) {
             leds_encenLed(LED_STATE_OK);
             leds_apagaLed(LED_STATE_ALARM);
             serial_printaMissatge(MISSATGE_BENVINGUDA);
-            
+            intents = 0;
+            caractersPIN = 0;
             
             estat = 1;
             
@@ -176,6 +177,7 @@ void controller_motor(void) {
             break;
         case 8: 
             if(string_equals(SOLICITUD_ACCEPTADA, missatgeRebut)){
+                iMissatgeRebut = 0;
                 serial_printaMissatge(DUES_PORTES_OBERTES);
                 timer_resetTics(timerController);
                 estat = 9;
