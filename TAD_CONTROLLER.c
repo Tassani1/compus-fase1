@@ -34,7 +34,7 @@ const char PERMIS_DENEGAT[] = "\n\r> LSBank - Permission Denied\r\n";
 const char PORTA_INTERIOR_OBERTA[] = "\n\r> LSBank - open interior door\r\n";
 const char PORTA_INTERIOR_TANCADA[] = "\r> LSBank - close interior door\r\n";
 
-const char EXIT_REQUESTED[] = "\r> LSBank - Exit Requested: ";
+const char EXIT_REQUESTED[] = "\r> LSBank - Exit Requested: \r\n";
 
 const char DUES_PORTES_OBERTES[] = "\r> LSBank - Open both doors\r\n";
 const char DUES_PORTES_TANCADES[] = "\r> LSBank - Close both doors\r\n";
@@ -156,10 +156,12 @@ void controller_motor(void) {
             }
             break;
         case 7:
-            leds_encenLed(LED_STATE_ALARM);
+            //leds_encenLed(LED_STATE_ALARM);
             if(exitRequestedPremut){
+                
                 exitRequestedPremut = 0;
                 serial_printaMissatge(EXIT_REQUESTED);
+                leds_apagaLed(LED_STATE_OK);
                 serial_esperaYesONo();
                 estat = 8;
             }

@@ -6,7 +6,6 @@
  */
 
 #include "TAD_TECLAT.h"
-#include "TAD_SERIAL.h"
 #include <xc.h>
 #include "TAD_TIMER.h"
 #include "TAD_CONTROLLER.h"
