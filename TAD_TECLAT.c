@@ -6,6 +6,7 @@
  */
 
 #include "TAD_TECLAT.h"
+#include "TAD_SERIAL.h"
 #include <xc.h>
 #include "TAD_TIMER.h"
 #include "TAD_CONTROLLER.h"
@@ -69,7 +70,6 @@ void teclat_init(void) {
 
     lastChar = 0;
     newChar  = 0;
-    auxChar = 0;
     
     pulsacions = 0;
     
@@ -189,26 +189,12 @@ void teclat_motor(void) {
             if(PORTBbits.RB1) columna = 0;
             else if(PORTBbits.RB2) columna = 1;
             else if(PORTBbits.RB3) columna = 2;
-            else{
-                // No hi ha columna vàlida: tornem a escanejar.
-                estatTeclat = 0;
-                break;
-            }
 
             // Aqu� ya haces tu l�gica SMS
             lastChar = newChar;
             newChar = getSMS_0(fila,columna);
-            teclaPremuda = 1;
-
-            // Si canvia de tecla, confirmem immediatament la pendent
-            // per evitar esperar sempre el timeout SMS.
-            if((auxChar != 0) && (newChar != lastChar)){
-                controller_newKeyPressed(auxChar);
-                auxChar = 0;
-                pulsacions = 0;
-            }
-
             auxChar = newChar;
+            teclaPremuda = 1;
 
             if (newChar == lastChar){
                 pulsacions++;
@@ -257,7 +243,7 @@ void teclat_motor(void) {
             //serial_putChar(auxChar);
             controller_newKeyPressed(auxChar);
             auxChar = 0;
-            lastChar = 0;
+            lastChar = 0xFF;
             pulsacions = 0;
             newChar = 0; 
         }
@@ -271,6 +257,5 @@ char getSMS_0(char fila, char columna) {
 void teclat_reset(void) {
     lastChar = 0;
     newChar = 0;
-    auxChar = 0;
     pulsacions = 0;
 }
