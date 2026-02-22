@@ -15,7 +15,7 @@
 #include "TAD_SPEAKER.h"
 #include "TAD_INTENSITY.h"
 
-static unsigned char PIN_CORRECTE[] = "11";
+static unsigned char PIN_CORRECTE[] = "12";
 static unsigned char PIN_CORRECTE_1[] = "1511MTV";
 static unsigned char PIN_CORRECTE_2[] = "2806AGN";
 static char SOLICITUD_ACCEPTADA[] = "Yes";
