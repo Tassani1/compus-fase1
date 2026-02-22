@@ -79,18 +79,16 @@ void serial_motor(){
 
         case 0:
             // Comprovar si hi ha missatges a la cua
-            if(YesONo){
+            if (queueCount > 0){
+                // Agafar el següent missatge de la cua
+                message = messageQueue[queueHead];
+                queueHead = (queueHead + 1) % MAX_MESSAGES;
+                queueCount--;
+                i = 0;
+                Estat = 1;
+            } else if(YesONo){
                 YesONo = 0;
                 Estat = 2;
-            } else{
-                if (queueCount > 0){
-                    // Agafar el següent missatge de la cua
-                    message = messageQueue[queueHead];
-                    queueHead = (queueHead + 1) % MAX_MESSAGES;
-                    queueCount--;
-                    i = 0;
-                    Estat = 1;
-                }
             }
             
             break;
@@ -114,9 +112,15 @@ void serial_motor(){
         case 2: 
             if (serial_RXAvail()) {
                 variable = serial_getChar();
-                controller_repChar(variable);
-                if (serial_TXAvail()) {
-                    serial_putChar(variable);
+                // Final de línia: tanquem resposta i tornem a mode normal.
+                if(variable == '\r' || variable == '\n'){
+                    controller_repChar('\0');
+                    Estat = 0;
+                } else{
+                    controller_repChar(variable);
+                    if (serial_TXAvail()) {
+                        serial_putChar(variable);
+                    }
                 }
             }
               
