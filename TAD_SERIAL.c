@@ -112,7 +112,7 @@ void serial_motor(){
         case 2: 
             if (serial_RXAvail()) {
                 variable = serial_getChar();
-                // Final de línia: tanquem resposta i tornem a mode normal.
+                // Final de linia: tanquem resposta i tornem a mode normal.
                 if(variable == '\r' || variable == '\n'){
                     controller_repChar('\0');
                     Estat = 0;

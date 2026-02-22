@@ -34,9 +34,9 @@ const char PERMIS_DENEGAT[] = "\n\r> LSBank - Permission Denied\r\n";
 const char PORTA_INTERIOR_OBERTA[] = "\n\r> LSBank - open interior door\r\n";
 const char PORTA_INTERIOR_TANCADA[] = "\r> LSBank - close interior door\r\n";
 
-const char EXIT_REQUESTED[] = "\r> LSBank - Exit Requested: \r\n";
+const char EXIT_REQUESTED[] = "\r> LSBank - Exit Requested: ";
 
-const char DUES_PORTES_OBERTES[] = "\r> LSBank - Open both doors\r\n";
+const char DUES_PORTES_OBERTES[] = "\n\r> LSBank - Open both doors\r\n";
 const char DUES_PORTES_TANCADES[] = "\r> LSBank - Close both doors\r\n";
 
 const char LLADRE_INTERCEPTAT[] = "\r> LSBank - Thief Intercepted\r\n";
@@ -168,7 +168,9 @@ void controller_motor(void) {
                 exitRequestedPremut = 0;
                 serial_printaMissatge(EXIT_REQUESTED);
                 leds_apagaLed(LED_STATE_OK);
+                iMissatgeRebut = 0;
                 serial_esperaYesONo();
+                
                 estat = 8;
             }
             break;
@@ -183,7 +185,6 @@ void controller_motor(void) {
                     estat = 10;
                 }
             }
-            iMissatgeRebut = 0;
             break;
         case 9:
             if(timer_getTics(timerController) >= 1000){
