@@ -13,12 +13,11 @@
 static unsigned char timerRebots;
 static unsigned char timerSMS;
 
-static char lastChar = '0';
-static unsigned char newChar;
 static char auxChar;
 static char teclaPremuda = 0;
 
-static unsigned char pulsacions;
+static unsigned char smsIndex;
+static char teclaBaseActual;
 
 static const char SMS_0[FILES][COLUMNES] = {
     {'1','2','3'},
@@ -67,10 +66,9 @@ void teclat_init(void) {
     timer_newTimer(&timerRebots);
     timer_newTimer(&timerSMS);
 
-    lastChar = 0;
-    newChar  = 0;
-    
-    pulsacions = 0;
+    auxChar = 0;
+    smsIndex = 0;
+    teclaBaseActual = 0;
     
     //LED
     TRISAbits.RA4 = 0;
@@ -80,6 +78,7 @@ void teclat_motor(void) {
     static unsigned char estatTeclat = 0;
     static char fila;
     static unsigned char columna = 0;
+    char teclaBase;
     
     switch(estatTeclat) {
         //========================
@@ -195,35 +194,36 @@ void teclat_motor(void) {
             }
 
             // Aqu� ya haces tu l�gica SMS
-            lastChar = newChar;
-            newChar = getSMS_0(fila,columna);
+            teclaBase = getSMS_0(fila,columna);
             teclaPremuda = 1;
 
             // Si canvia de tecla, confirmem immediatament la pendent
             // per evitar esperar sempre el timeout SMS.
-            if((auxChar != 0) && (newChar != lastChar)){
+            if((auxChar != 0) && (teclaBase != teclaBaseActual)){
                 controller_newKeyPressed(auxChar);
                 auxChar = 0;
-                pulsacions = 0;
+                smsIndex = 0;
             }
 
-            auxChar = newChar;
-
-            if (newChar == lastChar){
-                pulsacions++;
-                if (pulsacions == 1){
-                    auxChar = SMS_1[fila][columna];
-                } else if (pulsacions == 2){
-                    auxChar = SMS_2[fila][columna];
-                } else if (pulsacions == 3){
-                    auxChar = SMS_3[fila][columna];
-                    lastChar = 0;
-                } else if (pulsacions == 4){
-                    pulsacions = 0;
+            if(teclaBase == teclaBaseActual){
+                smsIndex++;
+                if(smsIndex >= 4){
+                    smsIndex = 0;
                 }
             }
             else{
-                pulsacions = 0;
+                teclaBaseActual = teclaBase;
+                smsIndex = 0;
+            }
+
+            if (smsIndex == 0){
+                auxChar = SMS_0[fila][columna];
+            } else if (smsIndex == 1){
+                auxChar = SMS_1[fila][columna];
+            } else if (smsIndex == 2){
+                auxChar = SMS_2[fila][columna];
+            } else {
+                auxChar = SMS_3[fila][columna];
             }
 
             timer_resetTics(timerSMS);
@@ -256,9 +256,8 @@ void teclat_motor(void) {
             //serial_putChar(auxChar);
             controller_newKeyPressed(auxChar);
             auxChar = 0;
-            lastChar = 0;
-            pulsacions = 0;
-            newChar = 0; 
+            smsIndex = 0;
+            teclaBaseActual = 0;
         }
     }
 }
@@ -268,7 +267,7 @@ char getSMS_0(char fila, char columna) {
 }
 
 void teclat_reset(void) {
-    lastChar = 0;
-    newChar = 0;
-    pulsacions = 0;
+    auxChar = 0;
+    smsIndex = 0;
+    teclaBaseActual = 0;
 }
