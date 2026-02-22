@@ -14,9 +14,9 @@
 static unsigned char timerRebots;
 static unsigned char timerSMS;
 
-static char lastChar = '0';
+static unsigned char lastChar = 0;
 static unsigned char newChar;
-static char auxChar;
+static unsigned char auxChar;
 static char teclaPremuda = 0;
 
 static unsigned char pulsacions;

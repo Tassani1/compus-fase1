@@ -15,11 +15,11 @@
 
 #define MAX_MESSAGES 8  // Mida de la cua de missatges
 
-static unsigned char* messageQueue[MAX_MESSAGES];  // Cua circular de missatges
+static const char* messageQueue[MAX_MESSAGES];  // Cua circular de missatges
 static unsigned char queueHead = 0;  // Índex de lectura
 static unsigned char queueTail = 0;  // Índex d'escriptura
 static unsigned char queueCount = 0; // Nombre de missatges a la cua
-static unsigned char* message;
+static const char* message;
 static unsigned char i = 0;
 char YesONo = 0;
 

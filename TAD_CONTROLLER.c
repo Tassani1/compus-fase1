@@ -15,13 +15,13 @@
 #include "TAD_SPEAKER.h"
 #include "TAD_INTENSITY.h"
 
-static unsigned char PIN_CORRECTE[] = "12";
+static char PIN_CORRECTE[] = "12";
 static unsigned char PIN_CORRECTE_1[] = "1511MTV";
 static unsigned char PIN_CORRECTE_2[] = "2806AGN";
 static char SOLICITUD_ACCEPTADA[] = "Yes";
 static char SOLICITUD_DENEGADA[] = "No";
 static char missatgeRebut[20];
-static char iMissatgeRebut = 0;
+static unsigned char iMissatgeRebut = 0;
 
 const char MISSATGE_BENVINGUDA[] = "\r> LSBank - New Day!\r\n";
 const char PORTA_EXTERIOR_OBERTA[] = "\r> LSBank - Open exterior door\r\n";
@@ -44,7 +44,7 @@ const char RESET_SISTEMA[] = "\r> LSBank - Reset System\r\n";
 
 char intents = 0;
 char caractersPIN = 0;
-unsigned char PIN[7];
+char PIN[7];
 static unsigned char timerController;
 char exitRequestedPremut = 0;
 
@@ -71,7 +71,13 @@ int string_equals(const char *a, const char *b) {
     return (*a == '\0' && *b == '\0');
 }
 void controller_repChar(char lletra){
-    missatgeRebut[iMissatgeRebut++] = lletra;
+    if(iMissatgeRebut < (unsigned char)(sizeof(missatgeRebut) - 1)){
+        missatgeRebut[iMissatgeRebut++] = lletra;
+        missatgeRebut[iMissatgeRebut] = '\0';
+    } else{
+        // Evitem overflow mantenint sempre una cadena acabada en '\0'.
+        missatgeRebut[sizeof(missatgeRebut) - 1] = '\0';
+    }
 }
 
 void controller_motor(void) {
