@@ -21,7 +21,7 @@ static unsigned char PIN_CORRECTE_2[] = "2806AGN";
 static char SOLICITUD_ACCEPTADA[] = "Yes";
 static char SOLICITUD_DENEGADA[] = "No";
 static char missatgeRebut[20];
-static unsigned char iMissatgeRebut = 0;
+unsigned char iMissatgeRebut = 0;
 
 const char MISSATGE_BENVINGUDA[] = "\n\r> LSBank - New Day!\r";
 const char PORTA_EXTERIOR_OBERTA[] = "\n\r> LSBank - Open exterior door\r\n";
@@ -39,9 +39,9 @@ const char EXIT_REQUESTED[] = "\r> LSBank - Exit Requested: ";
 const char DUES_PORTES_OBERTES[] = "\n\r> LSBank - Open both doors\r\n";
 const char DUES_PORTES_TANCADES[] = "\r> LSBank - Close both doors\r";
 
-const char LLADRE_INTERCEPTAT[] = "\n\r> LSBank - Thief Intercepted\r\n";
-const char RESET_SISTEMA[] = "\r> LSBank - Reset System: ";
-const char RESET_SISTEMA_CICLIC[] = "\n\r> LSBank - Reset System: ";
+const char LLADRE_INTERCEPTAT[] = "\n\r> LSBank - Thief Intercepted\r";
+const char RESET_SISTEMA[] = "\n\r> LSBank - Reset System: ";
+//const char RESET_SISTEMA_CICLIC[] = "\r> LSBank - Reset System: ";
 
 char intents = 0;
 char caractersPIN = 0;
@@ -87,7 +87,6 @@ void engegarAlarma(){
     intensity_stop();
     timer_resetTics(timerController);
     serial_printaMissatge(LLADRE_INTERCEPTAT);  
-    serial_printaMissatge(RESET_SISTEMA);
     serial_esperaYesONo();
 }
 
@@ -152,6 +151,7 @@ void controller_motor(void) {
                     } else {
                         if(++intents >2){
                             engegarAlarma();
+                            serial_printaMissatge(RESET_SISTEMA);
                             estat = 10;
 
                         }else{
@@ -227,13 +227,14 @@ void controller_motor(void) {
             if(serial_respostaDisponible()){
                 if(string_equals(SOLICITUD_ACCEPTADA, missatgeRebut)){
                     iMissatgeRebut = 0;
-                    estat = 0;          // sortir immediat
                     missatgeRebut[0] = '\0';
+                    estat = 0;          // sortir immediat
+                    
                     break;
                 }
                 iMissatgeRebut = 0;    // resposta incorrecta
-                serial_printaMissatge(RESET_SISTEMA_CICLIC);
                 missatgeRebut[0] = '\0';
+                serial_printaMissatge(RESET_SISTEMA);
                 serial_esperaYesONo();
             }
 
