@@ -48,7 +48,7 @@ void main(void) {
     
     while(1) {
         controller_motor();
-        //intensity_motor();
+        intensity_motor();
         teclat_motor();
         serial_motor();
         speaker_motor();

@@ -31,16 +31,17 @@ const char MISSATGE_ENTRA_PIN[] = "\r> LSBank - Enter PIN: ";
 
 const char PERMIS_DENEGAT[] = "\n\r> LSBank - Permission Denied\r\n";
 
-const char PORTA_INTERIOR_OBERTA[] = "\n\r> LSBank - open interior door\r\n";
-const char PORTA_INTERIOR_TANCADA[] = "\r> LSBank - close interior door\r\n";
+const char PORTA_INTERIOR_OBERTA[] = "\n\r> LSBank - Open interior door\r\n";
+const char PORTA_INTERIOR_TANCADA[] = "\r> LSBank - Close interior door\r\n";
 
 const char EXIT_REQUESTED[] = "\r> LSBank - Exit Requested: ";
 
 const char DUES_PORTES_OBERTES[] = "\n\r> LSBank - Open both doors\r\n";
 const char DUES_PORTES_TANCADES[] = "\r> LSBank - Close both doors\r";
 
-const char LLADRE_INTERCEPTAT[] = "\r> LSBank - Thief Intercepted\r";
-const char RESET_SISTEMA[] = "\n\r> LSBank - Reset System: ";
+const char LLADRE_INTERCEPTAT[] = "\n\r> LSBank - Thief Intercepted\r\n";
+const char RESET_SISTEMA[] = "\r> LSBank - Reset System: ";
+const char RESET_SISTEMA_CICLIC[] = "\n\r> LSBank - Reset System: ";
 
 char intents = 0;
 char caractersPIN = 0;
@@ -97,9 +98,14 @@ void controller_motor(void) {
         case 0:
             leds_encenLed(LED_STATE_OK);
             leds_apagaLed(LED_STATE_ALARM);
+            
             serial_printaMissatge(MISSATGE_BENVINGUDA);
+           
             intents = 0;
             caractersPIN = 0;
+            iMissatgeRebut = 0;
+            missatgeRebut[0] = '\0';
+            exitRequestedPremut = 0;
             
             estat = 1;
             
@@ -202,8 +208,10 @@ void controller_motor(void) {
             } else{
                 if(string_equals(SOLICITUD_DENEGADA, missatgeRebut)){
                     timer_resetTics(timerController);
+                    engegarAlarma();
                     estat = 10;
                     iMissatgeRebut = 0;
+                    missatgeRebut[0] = '\0';
                 }
             }
             break;
@@ -220,11 +228,11 @@ void controller_motor(void) {
                 if(string_equals(SOLICITUD_ACCEPTADA, missatgeRebut)){
                     iMissatgeRebut = 0;
                     estat = 0;          // sortir immediat
-                    break;
                     missatgeRebut[0] = '\0';
+                    break;
                 }
                 iMissatgeRebut = 0;    // resposta incorrecta
-                serial_printaMissatge(RESET_SISTEMA);
+                serial_printaMissatge(RESET_SISTEMA_CICLIC);
                 missatgeRebut[0] = '\0';
                 serial_esperaYesONo();
             }
