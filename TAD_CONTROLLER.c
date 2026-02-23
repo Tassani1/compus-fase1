@@ -23,8 +23,8 @@ static char SOLICITUD_DENEGADA[] = "No";
 static char missatgeRebut[20];
 static unsigned char iMissatgeRebut = 0;
 
-const char MISSATGE_BENVINGUDA[] = "\r> LSBank - New Day!\r\n";
-const char PORTA_EXTERIOR_OBERTA[] = "\r> LSBank - Open exterior door\r\n";
+const char MISSATGE_BENVINGUDA[] = "\n\r> LSBank - New Day!\r";
+const char PORTA_EXTERIOR_OBERTA[] = "\n\r> LSBank - Open exterior door\r\n";
 const char PORTA_EXTERIOR_TANCADA[] = "\r> LSBank - Close exterior door\r\n";
 
 const char MISSATGE_ENTRA_PIN[] = "\r> LSBank - Enter PIN: ";
