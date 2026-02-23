@@ -39,8 +39,8 @@ const char EXIT_REQUESTED[] = "\r> LSBank - Exit Requested: ";
 const char DUES_PORTES_OBERTES[] = "\n\r> LSBank - Open both doors\r\n";
 const char DUES_PORTES_TANCADES[] = "\r> LSBank - Close both doors\r\n";
 
-const char LLADRE_INTERCEPTAT[] = "\r> LSBank - Thief Intercepted\r\n";
-const char RESET_SISTEMA[] = "\r> LSBank - Reset System\r\n";
+const char LLADRE_INTERCEPTAT[] = "\r> LSBank - Thief Intercepted\r";
+const char RESET_SISTEMA[] = "\n\r> LSBank - Reset System: ";
 
 char intents = 0;
 char caractersPIN = 0;
@@ -83,8 +83,11 @@ void engegarAlarma(){
     //anar estat alarma
     leds_apagaLed(LED_STATE_OK);
     leds_encenLed(LED_STATE_ALARM);
+    intensity_stop();
     timer_resetTics(timerController);
-    
+    serial_printaMissatge(LLADRE_INTERCEPTAT);  
+    serial_printaMissatge(RESET_SISTEMA);
+    serial_esperaYesONo();
 }
 
 void controller_motor(void) {
@@ -179,7 +182,6 @@ void controller_motor(void) {
             }
             break;
         case 7:
-            //leds_encenLed(LED_STATE_ALARM);
             if(exitRequestedPremut){
                 
                 exitRequestedPremut = 0;
@@ -201,6 +203,7 @@ void controller_motor(void) {
                 if(string_equals(SOLICITUD_DENEGADA, missatgeRebut)){
                     timer_resetTics(timerController);
                     estat = 10;
+                    iMissatgeRebut = 0;
                 }
             }
             break;
@@ -213,7 +216,17 @@ void controller_motor(void) {
             break;
             //ALARMA
         case 10:
-            
+            if(timer_getTics(timerController) >= 5000){
+                estat = 0;
+            } else{
+                if(string_equals(SOLICITUD_ACCEPTADA, missatgeRebut)){
+                    iMissatgeRebut = 0;
+                    estat = 0;
+                } else{
+                    //iMissatgeRebut = 0;
+                    //serial_printaMissatge(RESET_SISTEMA); 
+                }
+            }
             break;
             
              
