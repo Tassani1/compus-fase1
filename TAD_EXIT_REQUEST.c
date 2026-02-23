@@ -28,7 +28,6 @@ void exitRequest_motor(){
             if(PORTBbits.RB0 == POLSADOR_PREMUT){
                 timer_resetTics(Timer);
                 Estat = 1;
-                leds_encenLed(LED_STATE_ALARM);
             }
             break;
         case 1:
@@ -49,7 +48,7 @@ void exitRequest_motor(){
         case 3: 
             
             if(timer_getTics(Timer)>=100){
-                leds_apagaLed(LED_STATE_ALARM);
+                
                 controller_exitRequested();
                 Estat = 0;
             }

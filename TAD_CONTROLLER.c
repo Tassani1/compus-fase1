@@ -79,6 +79,13 @@ void controller_repChar(char lletra){
         missatgeRebut[sizeof(missatgeRebut) - 1] = '\0';
     }
 }
+void engegarAlarma(){
+    //anar estat alarma
+    leds_apagaLed(LED_STATE_OK);
+    leds_encenLed(LED_STATE_ALARM);
+    timer_resetTics(timerController);
+    
+}
 
 void controller_motor(void) {
     static char estat = 0;
@@ -135,12 +142,21 @@ void controller_motor(void) {
                         intents = 0;
                     } else {
                         if(++intents >2){
-                            //anar estat alarma
+                            engegarAlarma();
                             estat = 10;
-                            intents = 0;
+
+                        }else{
+                            //iMissatgeRebut = 0;
+                            caractersPIN = 0;
+                            serial_printaMissatge(PERMIS_DENEGAT);
+                            serial_printaMissatge(MISSATGE_ENTRA_PIN);
+
                         }
                     }
                 }    
+            } else{
+                engegarAlarma();
+                estat = 10;                
             }
             break;
             
@@ -168,7 +184,7 @@ void controller_motor(void) {
                 
                 exitRequestedPremut = 0;
                 serial_printaMissatge(EXIT_REQUESTED);
-                leds_apagaLed(LED_STATE_OK);
+                
                 iMissatgeRebut = 0;
                 serial_esperaYesONo();
                 
@@ -197,6 +213,7 @@ void controller_motor(void) {
             break;
             //ALARMA
         case 10:
+            
             break;
             
              
