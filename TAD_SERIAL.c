@@ -22,6 +22,7 @@ static unsigned char queueCount = 0; // Nombre de missatges a la cua
 static const char* message;
 static unsigned char i = 0;
 char YesONo = 0;
+static unsigned char respostaCompleta = 0;
 
 
 void serial_init(void){
@@ -71,6 +72,13 @@ void serial_printaMissatge(const char *missatge){
 void serial_esperaYesONo() {
         YesONo = 1;
 }
+unsigned char serial_respostaDisponible(void){
+    if(respostaCompleta){
+        respostaCompleta = 0;
+        return 1;
+    }
+    return 0;
+}
 
 void serial_motor(){
     char variable;
@@ -115,6 +123,7 @@ void serial_motor(){
                 // Final de linia: tanquem resposta i tornem a mode normal.
                 if(variable == '\r' || variable == '\n'){
                     controller_repChar('\0');
+                    respostaCompleta = 1;
                     Estat = 0;
                 } else{
                     controller_repChar(variable);

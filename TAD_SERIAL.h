@@ -31,4 +31,6 @@ void serial_motor(void);
 
 void serial_esperaYesONo(void);
 
+unsigned char serial_respostaDisponible(void);
+
 #endif

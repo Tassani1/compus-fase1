@@ -37,7 +37,7 @@ const char PORTA_INTERIOR_TANCADA[] = "\r> LSBank - close interior door\r\n";
 const char EXIT_REQUESTED[] = "\r> LSBank - Exit Requested: ";
 
 const char DUES_PORTES_OBERTES[] = "\n\r> LSBank - Open both doors\r\n";
-const char DUES_PORTES_TANCADES[] = "\r> LSBank - Close both doors\r\n";
+const char DUES_PORTES_TANCADES[] = "\r> LSBank - Close both doors\r";
 
 const char LLADRE_INTERCEPTAT[] = "\r> LSBank - Thief Intercepted\r";
 const char RESET_SISTEMA[] = "\n\r> LSBank - Reset System: ";
@@ -216,18 +216,24 @@ void controller_motor(void) {
             break;
             //ALARMA
         case 10:
-            if(timer_getTics(timerController) >= 5000){
-                estat = 0;
-            } else{
+            if(serial_respostaDisponible()){
                 if(string_equals(SOLICITUD_ACCEPTADA, missatgeRebut)){
                     iMissatgeRebut = 0;
-                    estat = 0;
-                } else{
-                    //iMissatgeRebut = 0;
-                    //serial_printaMissatge(RESET_SISTEMA); 
+                    estat = 0;          // sortir immediat
+                    break;
+                    missatgeRebut[0] = '\0';
                 }
+                iMissatgeRebut = 0;    // resposta incorrecta
+                serial_printaMissatge(RESET_SISTEMA);
+                missatgeRebut[0] = '\0';
+                serial_esperaYesONo();
+            }
+
+            if(timer_getTics(timerController) >= 60000){
+                estat = 0;             // timeout
             }
             break;
+            
             
              
             
