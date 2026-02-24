@@ -57,12 +57,12 @@ void controller_newKeyPressed(unsigned char key){
         PIN[caractersPIN++] = key;
         serial_putChar(key);
     }
-    
-
 }
+
 void controller_exitRequested(void){
     exitRequestedPremut = 1;
 }
+
 int string_equals(const char *a, const char *b) {
     while (*a && *b) {
         if (*a != *b) return 0;
@@ -71,6 +71,7 @@ int string_equals(const char *a, const char *b) {
     }
     return (*a == '\0' && *b == '\0');
 }
+
 void controller_repChar(char lletra){
     if(iMissatgeRebut < (unsigned char)(sizeof(missatgeRebut) - 1)){
         missatgeRebut[iMissatgeRebut++] = lletra;
@@ -80,13 +81,15 @@ void controller_repChar(char lletra){
         missatgeRebut[sizeof(missatgeRebut) - 1] = '\0';
     }
 }
+
 void engegarAlarma(){
     //anar estat alarma
     leds_apagaLed(LED_STATE_OK);
     leds_encenLed(LED_STATE_ALARM);
     intensity_stop();
     timer_resetTics(timerController);
-    serial_printaMissatge(LLADRE_INTERCEPTAT);  
+    serial_printaMissatge(LLADRE_INTERCEPTAT); 
+    speaker_playAlarmSound();
     serial_esperaYesONo();
 }
 
@@ -105,6 +108,8 @@ void controller_motor(void) {
             iMissatgeRebut = 0;
             missatgeRebut[0] = '\0';
             exitRequestedPremut = 0;
+            
+            speaker_stopSound();
             
             estat = 1;
             
@@ -143,9 +148,9 @@ void controller_motor(void) {
  
         case 4:
             if(timer_getTics(timerController) <= 60000){
-                if(caractersPIN >=2){
+                if(caractersPIN >=7){
                     
-                    if(string_equals(PIN, PIN_CORRECTE)){
+                    if(string_equals(PIN, PIN_CORRECTE_1)){
                         estat = 5;
                         intents = 0;
                     } else {
@@ -165,6 +170,7 @@ void controller_motor(void) {
                 }    
             } else{
                 engegarAlarma();
+                serial_printaMissatge(RESET_SISTEMA);
                 estat = 10;                
             }
             break;
@@ -238,21 +244,9 @@ void controller_motor(void) {
                 serial_esperaYesONo();
             }
 
-            if(timer_getTics(timerController) >= 60000){
+            /*if(timer_getTics(timerController) >= 60000){
                 estat = 0;             // timeout
-            }
-            break;
-            
-            
-             
-            
-               
-                    
-                    
-                
-            
-            
-         
-            
+            }*/
+            break;       
     }
 }
