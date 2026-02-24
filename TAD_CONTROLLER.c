@@ -16,7 +16,7 @@
 #include "TAD_INTENSITY.h"
 
 static char PIN_CORRECTE[] = "12";
-static unsigned char PIN_CORRECTE_1[] = "1511MTV";
+static unsigned char PIN_CORRECTE_1[] = "1511MTV\0";
 static unsigned char PIN_CORRECTE_2[] = "2806AGN";
 static char SOLICITUD_ACCEPTADA[] = "Yes";
 static char SOLICITUD_DENEGADA[] = "No";
@@ -45,7 +45,7 @@ const char RESET_SISTEMA[] = "\n\r> LSBank - Reset System: ";
 
 char intents = 0;
 char caractersPIN = 0;
-char PIN[7];
+char PIN[8];
 static unsigned char timerController;
 char exitRequestedPremut = 0;
 
@@ -55,6 +55,7 @@ void controller_init(void){
 void controller_newKeyPressed(unsigned char key){
     if(caractersPIN<7){
         PIN[caractersPIN++] = key;
+        PIN[caractersPIN] = '\0'; 
         serial_putChar(key);
     }
 }
