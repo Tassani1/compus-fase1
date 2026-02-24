@@ -10,6 +10,10 @@
 #include "pic18f4321.h"
 #include "TAD_TIMER.h"
 
+#define STEP_TICS 3000
+#define STEP_PERCENT 5
+#define TOTAL_TICS 60000
+
 static unsigned long tick_counter = 0;        // Comptador global de ticks (2ms)
 static unsigned long step_counter = 0;        // Comptador per saber quan pujar %
 static unsigned char intensity_percent = 0;  // 0..100
@@ -30,7 +34,7 @@ void intensity_start(void) {
     step_counter = 0;
     pwm_counter = 0;
     intensity_percent = 0;
-    estat = 1; // Comen�a a incrementar la intensitat
+    estat = 1; // Comen?a a incrementar la intensitat
     timer_resetTics(timerGlobal);
     timer_resetTics(timerSegment);
 }
@@ -53,25 +57,34 @@ void intensity_motor(void) {
             step_counter = timer_getTics(timerSegment);
 
             // Cada 600 ticks (1,2 s) incrementem 1%
-            if (step_counter >= 600){
+            if (step_counter >= STEP_TICS) {
                 timer_resetTics(timerSegment);
 
-                if (intensity_percent < 100) {
-                    intensity_percent++;
+                if (intensity_percent <= 100 - STEP_PERCENT) {
+                    intensity_percent += STEP_PERCENT;
+                } else {
+                    intensity_percent = 100;
                 }
             }
 
-            // --- PWM per software ---
+            unsigned char duty;
+
+            // Curva cuadrática (más suave al inicio)
+            duty = (intensity_percent * intensity_percent) / 100;
+
             pwm_counter++;
+            
             if (pwm_counter >= 100) {
                 pwm_counter = 0;
             }
-            if (pwm_counter < intensity_percent) {
+
+            if (pwm_counter < duty) {
                 LATDbits.LATD0 = 1;
             } else {
                 LATDbits.LATD0 = 0;
             }
-            if (tick_counter >= 100 * 600) { // Si han passat 2 minuts, aturem
+            
+            if (tick_counter >= TOTAL_TICS) { // Si han passat 2 minuts, aturem
                 intensity_stop();
             }
             break;
