@@ -23,6 +23,8 @@ void controller_exitRequested(void);
 // Post: Funció que ha de cridar el TAD de Exit_Request
 
 void controller_motor(void);
+// Post: Funcio que controla la lògica del sistema
 
 void controller_repChar(char lletra);
+// Post: Funcio que rep un char des del teclat del serial
 #endif

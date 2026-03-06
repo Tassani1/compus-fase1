@@ -9,10 +9,18 @@
 #include <xc.h>
 #include "TAD_HALL.h"
 
+char valor = PORTCbits.RC4;
+
 void hall_init(void) {
     TRISCbits.TRISC4 = 1;   // Entrada
 }
 
 unsigned char hall_detectat(void) {
-    return (PORTCbits.RC4 == 0);   // Activo en bajo
+
+    if (!valor){
+        return 1;
+    }else {
+        return 0;
+    }
+     // Activo en bajo
 }
