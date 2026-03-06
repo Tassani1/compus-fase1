@@ -207,16 +207,20 @@ void controller_motor(void) {
             }
             break;
         case 8: 
-            if(string_equals(SOLICITUD_ACCEPTADA, missatgeRebut)){
-                iMissatgeRebut = 0;
-                serial_printaMissatge(DUES_PORTES_OBERTES);
-                timer_resetTics(timerController);
-                estat = 9;
-            } else{
-                if(string_equals(SOLICITUD_DENEGADA, missatgeRebut)){
+            if(serial_respostaDisponible()){
+                if(string_equals(SOLICITUD_ACCEPTADA, missatgeRebut)){
+                    iMissatgeRebut = 0;
+                    serial_printaMissatge(DUES_PORTES_OBERTES);
+                    timer_resetTics(timerController);
+                    estat = 9;
+                } else if(string_equals(SOLICITUD_DENEGADA, missatgeRebut)){
                     timer_resetTics(timerController);
                     engegarAlarma();
                     estat = 10;
+                    iMissatgeRebut = 0;
+                    missatgeRebut[0] = '\0';
+                } else {
+                    /* respuesta no reconeguda: dejar el estado y limpiar */
                     iMissatgeRebut = 0;
                     missatgeRebut[0] = '\0';
                 }
